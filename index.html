@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Patterns, Not Promises</title>
+  <title>Relationship Reality Check – Patterns & Load Map</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root {
@@ -34,7 +34,7 @@
     }
 
     .app-shell {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 16px 16px 40px;
     }
@@ -112,6 +112,7 @@
 
     .mode-toggle {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
       margin-top: 8px;
     }
@@ -133,10 +134,6 @@
       color: #1a1024;
       border-color: transparent;
       font-weight: 600;
-    }
-
-    .mode-btn span {
-      opacity: 0.8;
     }
 
     .question {
@@ -176,12 +173,6 @@
       font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.12s ease-out;
-    }
-
-    .option-btn small {
-      display: block;
-      font-size: 0.7rem;
-      color: var(--muted);
     }
 
     .option-btn.selected {
@@ -290,71 +281,6 @@
       transition: width 0.2s ease-out;
     }
 
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .summary-card {
-      padding: 10px 10px 12px;
-      border-radius: var(--radius-sm);
-      background: rgba(5, 5, 20, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      font-size: 0.85rem;
-    }
-
-    .summary-card h3 {
-      margin: 0 0 4px;
-      font-size: 0.9rem;
-    }
-
-    .summary-tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 4px;
-    }
-
-    .summary-tag {
-      padding: 2px 7px;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: var(--muted);
-    }
-
-    .summary-tag.strong {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .summary-tag.gap {
-      border-color: var(--danger);
-      color: var(--danger);
-    }
-
-    .summary-tag.align {
-      border-color: var(--ok);
-      color: var(--ok);
-    }
-
-    .tiny-levers {
-      margin-top: 8px;
-      font-size: 0.82rem;
-      color: var(--muted);
-    }
-
-    .tiny-levers ul {
-      padding-left: 18px;
-      margin: 4px 0 0;
-    }
-
-    .tiny-levers li {
-      margin-bottom: 2px;
-    }
-
     .badge {
       display: inline-flex;
       align-items: center;
@@ -373,6 +299,69 @@
       background: var(--accent);
     }
 
+    .summary-card {
+      margin-top: 10px;
+      padding: 10px 10px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(5, 5, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.85rem;
+    }
+
+    .summary-card h3 {
+      margin: 0 0 4px;
+      font-size: 0.95rem;
+    }
+
+    .summary-tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .summary-tag {
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+    }
+
+    .summary-tag.gap {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .summary-tag.align {
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+
+    .export-area textarea {
+      width: 100%;
+      min-height: 160px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(5, 5, 20, 0.9);
+      color: var(--text);
+      padding: 8px;
+      font-size: 0.78rem;
+      resize: vertical;
+    }
+
+    .export-btn {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--text);
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-top: 6px;
+      margin-right: 6px;
+    }
+
     @media (max-width: 600px) {
       header {
         border-radius: 0 0 14px 14px;
@@ -386,240 +375,258 @@
 <body>
   <div class="app-shell">
     <header>
-      <h1>Patterns, Not Promises</h1>
-      <p>Map what your nervous systems actually prioritise under stress, not what you wish you prioritised.</p>
+      <h1>Relationship Reality Check</h1>
+      <p>Two nervous systems. One relationship. Map how bad it feels, and why.</p>
       <div class="pill-row">
-        <div class="pill"><strong>ND-aware</strong> ADHD · PDA · RSD · Autism · PMDD</div>
-        <div class="pill">Low-pressure · No “shoulds” · On-device only</div>
+        <div class="pill"><strong>ND-aware</strong> ADHD · PDA · RSD · Autism · Trauma · PMDD</div>
+        <div class="pill">Local-only · No logins · Export report for AI</div>
       </div>
     </header>
-
     <main id="app"></main>
   </div>
 
   <script>
-    // -----------------------------
-    // Data: questions & structure
-    // -----------------------------
-
-    const SECTIONS = [
-      { id: "mode", title: "Start", kind: "mode" },
-      { id: "baseline", title: "Baseline values", kind: "questions" },
-      { id: "stress", title: "Stress & energy", kind: "questions" },
-      { id: "scenarios", title: "Real-world tradeoffs", kind: "questions" },
-      { id: "avoidance", title: "Avoidance & safety", kind: "questions" },
-      { id: "intimacy", title: "Intimacy readiness", kind: "questions" },
-      { id: "summary", title: "Summary", kind: "summary" }
-    ];
+    const STORAGE_KEY = "relationship_reality_check_v1";
 
     const USERS = [
       { id: "self", label: "You" },
       { id: "partner", label: "Partner" }
     ];
 
+    const SECTIONS = [
+      { id: "mode", title: "Start", kind: "mode" },
+      { id: "values", title: "What you say you want", kind: "questions" },
+      { id: "reality", title: "What actually happens", kind: "questions" },
+      { id: "blockers", title: "What hijacks connection", kind: "questions" },
+      { id: "load", title: "Life load that crushes the relationship", kind: "questions" },
+      { id: "safety", title: "Safety, fear, and shutdown", kind: "questions" },
+      { id: "intimacy", title: "Intimacy & closeness", kind: "questions" },
+      { id: "summary", title: "Summary & export", kind: "summary" }
+    ];
+
     const QUESTIONS = {
-      baseline: [
+      values: [
         {
-          id: "ideal_importance_closeness",
+          id: "v_partner_importance",
           type: "slider",
-          label: "Emotional closeness with partner",
-          help: "In an ideal world, how important is this to you?",
-          min: 0,
-          max: 10,
-          tags: ["partner", "stated"]
+          label: "How central is this relationship to your sense of a good life?",
+          min: 0, max: 10
         },
         {
-          id: "ideal_importance_intimacy",
+          id: "v_child_importance",
           type: "slider",
-          label: "Physical intimacy and affection",
-          help: "Not pressure, just how much you value it ideally.",
-          min: 0,
-          max: 10,
-          tags: ["partner", "intimacy", "stated"]
+          label: "How central is being a good parent (if applicable) to your sense of a good life?",
+          min: 0, max: 10
         },
         {
-          id: "ideal_importance_child",
+          id: "v_work_importance",
           type: "slider",
-          label: "Parenting / time with child",
-          help: "How central is this in your ideal life?",
-          min: 0,
-          max: 10,
-          tags: ["child", "stated"]
+          label: "How central is work/career to your sense of a good life?",
+          min: 0, max: 10
         },
         {
-          id: "ideal_importance_work",
+          id: "v_autonomy_importance",
           type: "slider",
-          label: "Work / career / contribution",
-          help: "Regardless of current job, how important is this domain?",
-          min: 0,
-          max: 10,
-          tags: ["work", "stated"]
+          label: "How central is having enough autonomy/alone time?",
+          min: 0, max: 10
         },
         {
-          id: "ideal_importance_autonomy",
+          id: "v_stability_importance",
           type: "slider",
-          label: "Autonomy and alone time",
-          help: "Space to decompress, stim, or just be left alone.",
-          min: 0,
-          max: 10,
-          tags: ["autonomy", "stated"]
+          label: "How central is feeling emotionally safe and stable with your partner?",
+          min: 0, max: 10
         }
       ],
-      stress: [
+      reality: [
         {
-          id: "energy_drain_time",
-          type: "single",
-          label: "When are you usually most drained?",
-          options: [
-            { id: "morning", label: "Morning" },
-            { id: "afternoon", label: "Afternoon" },
-            { id: "evening", label: "Evening" },
-            { id: "varies", label: "It varies a lot" }
-          ],
-          tags: ["stress"]
-        },
-        {
-          id: "after_day_need",
-          type: "single",
-          label: "After a heavy day, you usually need first:",
-          options: [
-            { id: "silence", label: "Silence / low input", tags: ["autonomy"] },
-            { id: "screens", label: "Screens / scrolling / games", tags: ["self_soothing"] },
-            { id: "talk", label: "Talking / debriefing", tags: ["partner"] },
-            { id: "movement", label: "Movement / walk / fidget", tags: ["regulation"] }
-          ],
-          tags: ["stress"]
-        },
-        {
-          id: "overwhelm_pattern",
-          type: "single",
-          label: "When you’re overwhelmed, you tend to:",
-          options: [
-            { id: "shutdown", label: "Shut down / go quiet", tags: ["shutdown"] },
-            { id: "irritable", label: "Get snappy or irritable", tags: ["defensive"] },
-            { id: "overfunction", label: "Do more to try to fix everything", tags: ["overfunction"] },
-            { id: "disappear_task", label: "Disappear into a task or hyperfocus", tags: ["avoidance"] }
-          ],
-          tags: ["stress"]
-        }
-      ],
-      scenarios: [
-        {
-          id: "one_hour_energy",
-          type: "single",
-          label: "You have 1 hour of usable energy tonight. What do you usually end up doing?",
-          help: "Answer honestly, not aspirationally.",
-          options: [
-            { id: "partner_time", label: "Time with partner", tags: ["partner", "revealed"] },
-            { id: "child_time", label: "Time with child", tags: ["child", "revealed"] },
-            { id: "work_admin", label: "Work / admin / emails", tags: ["work", "revealed"] },
-            { id: "screens", label: "Scrolling / TV / games", tags: ["self_soothing", "revealed"] },
-            { id: "chores", label: "Housework / chores", tags: ["house", "revealed"] }
-          ],
-          tags: ["revealed"]
-        },
-        {
-          id: "work_runs_over",
-          type: "single",
-          label: "A work task runs over and eats into your evening. What happens most often?",
-          options: [
-            { id: "protect_couple", label: "You protect couple time and push the task", tags: ["partner", "boundary", "revealed"] },
-            { id: "sacrifice_couple", label: "You sacrifice couple time to finish work", tags: ["work", "revealed"] },
-            { id: "sacrifice_rest", label: "You sacrifice your own rest to do both", tags: ["work", "self_cost", "revealed"] },
-            { id: "messy_mix", label: "You half-do both and end up wrecked", tags: ["overfunction", "revealed"] }
-          ],
-          tags: ["revealed"]
-        },
-        {
-          id: "child_settled_evening",
-          type: "single",
-          label: "Your child is finally settled. You’re both tired. What happens most often?",
-          options: [
-            { id: "separate_collapse", label: "You both collapse into separate things", tags: ["autonomy", "revealed"] },
-            { id: "more_housework", label: "One of you does more housework", tags: ["house", "revealed"] },
-            { id: "one_seeks_other_withdraws", label: "One seeks connection, the other withdraws", tags: ["partner", "avoidance", "revealed"] },
-            { id: "intentional_together", label: "You intentionally do something together", tags: ["partner", "revealed"] }
-          ],
-          tags: ["revealed"]
-        }
-      ],
-      avoidance: [
-        {
-          id: "demand_feels_like_run",
+          id: "r_time_together",
           type: "slider",
-          label: "When someone expects something from me, even if I want it, I often feel like running away.",
-          help: "0 = not at all, 10 = this is very strong for me.",
-          min: 0,
-          max: 10,
-          tags: ["pda", "avoidance"]
+          label: "In a typical week, how often do you have intentional time together (even 20–30 minutes)?",
+          min: 0, max: 10
         },
         {
-          id: "partner_wants_closeness_feel",
+          id: "r_quality_time_feel",
           type: "single",
-          label: "When my partner hints they want closeness, it usually feels like:",
+          label: "When you do spend time together, it usually feels:",
           options: [
-            { id: "warm_invite", label: "A warm invitation", tags: ["safety"] },
-            { id: "bit_pressure", label: "A bit of pressure", tags: ["pda"] },
-            { id: "demand", label: "A demand I want to avoid", tags: ["pda", "avoidance"] },
-            { id: "depends_state", label: "It depends a lot on my state", tags: ["context"] }
-          ],
-          tags: ["pda"]
+            { id: "connected", label: "Connected and close" },
+            { id: "flat", label: "Flat or distant" },
+            { id: "tense", label: "Tense or fragile" },
+            { id: "functional", label: "Functional (logistics, parenting, admin)" }
+          ]
         },
         {
-          id: "rsd_distance_story",
+          id: "r_priority_under_stress",
           type: "single",
-          label: "If my partner seems distant, I tend to assume:",
+          label: "When life is overwhelming, what usually gets sacrificed first?",
           options: [
-            { id: "tired", label: "They’re tired or overloaded", tags: ["neutral"] },
-            { id: "angry", label: "They’re angry with me", tags: ["rsd"] },
-            { id: "my_fault", label: "I’ve done something wrong", tags: ["rsd"] },
-            { id: "dont_want_me", label: "They don’t really want me", tags: ["rsd"] }
-          ],
-          tags: ["rsd"]
+            { id: "partner", label: "Time/energy for the relationship" },
+            { id: "child", label: "Time/energy for the child" },
+            { id: "self", label: "Your own rest/needs" },
+            { id: "work", label: "Work/obligations" }
+          ]
+        },
+        {
+          id: "r_feel_on_same_team",
+          type: "slider",
+          label: "How often do you feel like you’re on the same team?",
+          min: 0, max: 10
+        }
+      ],
+      blockers: [
+        {
+          id: "b_rsd_level",
+          type: "slider",
+          label: "Fear of rejection/being the problem (RSD) affects how you show up in the relationship.",
+          min: 0, max: 10
+        },
+        {
+          id: "b_pda_level",
+          type: "slider",
+          label: "Feeling pressured or expected to connect makes you want to avoid or shut down (PDA).",
+          min: 0, max: 10
+        },
+        {
+          id: "b_trauma_level",
+          type: "slider",
+          label: "Past experiences (trauma, betrayal, family, medical) make it hard to feel safe in this relationship.",
+          min: 0, max: 10
+        },
+        {
+          id: "b_sensory_level",
+          type: "slider",
+          label: "Sensory overload (noise, clutter, chaos) makes it hard to be present with your partner.",
+          min: 0, max: 10
+        },
+        {
+          id: "b_conflict_style",
+          type: "single",
+          label: "In conflict, you usually:",
+          options: [
+            { id: "pursue", label: "Pursue (push to talk/fix)" },
+            { id: "withdraw", label: "Withdraw (shut down/avoid)" },
+            { id: "swing", label: "Swing between both" }
+          ]
+        }
+      ],
+      load: [
+        {
+          id: "l_medical_load",
+          type: "slider",
+          label: "Medical/mental health stuff (yours or theirs) eats into your capacity for the relationship.",
+          min: 0, max: 10
+        },
+        {
+          id: "l_system_load",
+          type: "slider",
+          label: "Systems (NHS, work, legal, benefits, school) eat into your capacity for the relationship.",
+          min: 0, max: 10
+        },
+        {
+          id: "l_parenting_load",
+          type: "slider",
+          label: "Parenting load (including ND kids) eats into your capacity for the relationship.",
+          min: 0, max: 10
+        },
+        {
+          id: "l_house_load",
+          type: "slider",
+          label: "House/repairs/clutter/unsafe-feeling environment eats into your capacity for the relationship.",
+          min: 0, max: 10
+        },
+        {
+          id: "l_money_load",
+          type: "slider",
+          label: "Money/financial stress eats into your capacity for the relationship.",
+          min: 0, max: 10
+        },
+        {
+          id: "l_emotional_labour",
+          type: "single",
+          label: "Who carries most of the emotional/mental load for the relationship and family?",
+          options: [
+            { id: "me", label: "Mostly me" },
+            { id: "partner", label: "Mostly my partner" },
+            { id: "shared", label: "Roughly shared" },
+            { id: "nobody", label: "Nobody really carries it; things just happen or don’t" }
+          ]
+        }
+      ],
+      safety: [
+        {
+          id: "s_emotional_safety",
+          type: "slider",
+          label: "Right now, how emotionally safe do you feel in this relationship?",
+          min: 0, max: 10
+        },
+        {
+          id: "s_fear_blame",
+          type: "slider",
+          label: "How often do you feel like you’re being blamed or seen as the problem?",
+          min: 0, max: 10
+        },
+        {
+          id: "s_fear_abandonment",
+          type: "slider",
+          label: "How strong is your fear that this relationship might not survive as things are?",
+          min: 0, max: 10
+        },
+        {
+          id: "s_follow_deescalation",
+          type: "single",
+          label: "When things escalate, how often do agreed de-escalation strategies actually get followed?",
+          options: [
+            { id: "often", label: "Often" },
+            { id: "sometimes", label: "Sometimes" },
+            { id: "rarely", label: "Rarely" },
+            { id: "never", label: "Almost never" }
+          ]
         }
       ],
       intimacy: [
         {
-          id: "closeness_easier_when",
-          type: "multi",
-          label: "For me, physical or emotional closeness is easier when:",
-          options: [
-            { id: "house_ok", label: "The house is at least somewhat under control", tags: ["house", "green_flag"] },
-            { id: "not_working", label: "Work isn’t bleeding into the evening", tags: ["work", "green_flag"] },
-            { id: "alone_first", label: "I’ve had some alone time first", tags: ["autonomy", "green_flag"] },
-            { id: "wanted_not_pressured", label: "I feel wanted but not pressured", tags: ["safety", "green_flag"] }
-          ],
-          tags: ["intimacy"]
+          id: "i_emotional_closeness",
+          type: "slider",
+          label: "How emotionally close do you currently feel to your partner?",
+          min: 0, max: 10
         },
         {
-          id: "shuts_down_desire",
-          type: "multi",
-          label: "Biggest things that shut down my desire for closeness are:",
+          id: "i_physical_closeness",
+          type: "slider",
+          label: "How physically close/intimate do you currently feel (cuddling, sex, affection, etc.)?",
+          min: 0, max: 10
+        },
+        {
+          id: "i_initiation_feel",
+          type: "single",
+          label: "When your partner wants closeness, it usually feels like:",
           options: [
-            { id: "feeling_criticised", label: "Feeling criticised or judged", tags: ["rsd", "red_flag"] },
-            { id: "feeling_task", label: "Feeling like a task or obligation", tags: ["pda", "red_flag"] },
-            { id: "sensory_overload", label: "Sensory overload / too much input", tags: ["sensory", "red_flag"] },
-            { id: "unsafe_on_edge", label: "Feeling unsafe, braced, or on edge", tags: ["trauma", "red_flag"] }
-          ],
-          tags: ["intimacy"]
+            { id: "invitation", label: "A warm invitation" },
+            { id: "pressure", label: "Pressure or expectation" },
+            { id: "demand", label: "A demand you want to avoid" },
+            { id: "depends", label: "It depends on your state" }
+          ]
+        },
+        {
+          id: "i_shut_down_reasons",
+          type: "multi",
+          label: "Biggest things that shut down your desire for closeness are:",
+          options: [
+            { id: "criticised", label: "Feeling criticised or judged" },
+            { id: "unsafe", label: "Feeling unsafe, braced, or on edge" },
+            { id: "task", label: "Feeling like a task or obligation" },
+            { id: "overload", label: "Sensory overload / too much input" },
+            { id: "resentment", label: "Unspoken resentment or disappointment" }
+          ]
         }
       ]
     };
 
-    // -----------------------------
-    // State
-    // -----------------------------
-
-    const STORAGE_KEY = "patterns_not_promises_state_v1";
-
     let state = loadState() || {
-      mode: "solo", // "solo" | "couple"
+      mode: "couple",
       currentSectionIndex: 0,
       currentUserIndex: 0,
-      answers: {
-        self: {},
-        partner: {}
-      }
+      answers: { self: {}, partner: {} }
     };
 
     function loadState() {
@@ -627,7 +634,7 @@
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return null;
         return JSON.parse(raw);
-      } catch (e) {
+      } catch {
         return null;
       }
     }
@@ -635,28 +642,19 @@
     function saveState() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (e) {
-        // ignore
-      }
+      } catch {}
     }
 
     function resetState() {
       state = {
-        mode: "solo",
+        mode: "couple",
         currentSectionIndex: 0,
         currentUserIndex: 0,
-        answers: {
-          self: {},
-          partner: {}
-        }
+        answers: { self: {}, partner: {} }
       };
       saveState();
       render();
     }
-
-    // -----------------------------
-    // Helpers
-    // -----------------------------
 
     function getActiveUsers() {
       return state.mode === "solo" ? [USERS[0]] : USERS;
@@ -666,21 +664,19 @@
       return getActiveUsers()[state.currentUserIndex];
     }
 
-    function setAnswer(userId, questionId, value) {
+    function setAnswer(userId, qid, value) {
       if (!state.answers[userId]) state.answers[userId] = {};
-      state.answers[userId][questionId] = value;
+      state.answers[userId][qid] = value;
       saveState();
-      renderProgressBar();
     }
 
-    function getAnswer(userId, questionId, fallback = null) {
-      return state.answers[userId]?.[questionId] ?? fallback;
+    function getAnswer(userId, qid, fallback = null) {
+      return state.answers[userId]?.[qid] ?? fallback;
     }
 
     function nextSection() {
       if (SECTIONS[state.currentSectionIndex].id === "summary") return;
       state.currentSectionIndex++;
-      // if we moved past mode, ensure user index reset
       if (SECTIONS[state.currentSectionIndex].kind === "questions") {
         state.currentUserIndex = 0;
       }
@@ -733,155 +729,174 @@
       }
     }
 
-    // -----------------------------
-    // Scoring
-    // -----------------------------
-
     function computeScoresForUser(userId) {
-      const answers = state.answers[userId] || {};
+      const a = state.answers[userId] || {};
       const scores = {
-        stated: { partner: 0, child: 0, work: 0, autonomy: 0 },
-        revealed: { partner: 0, child: 0, work: 0, house: 0, self_soothing: 0, autonomy: 0 },
-        blockers: { pda: 0, rsd: 0, trauma: 0, sensory: 0 },
-        greenFlags: [],
-        redFlags: []
+        values_partner: (a["v_partner_importance"] || 0),
+        values_safety: (a["v_stability_importance"] || 0),
+        reality_time: (a["r_time_together"] || 0),
+        reality_team: (a["r_feel_on_same_team"] || 0),
+        blockers_rsd: (a["b_rsd_level"] || 0),
+        blockers_pda: (a["b_pda_level"] || 0),
+        blockers_trauma: (a["b_trauma_level"] || 0),
+        blockers_sensory: (a["b_sensory_level"] || 0),
+        load_medical: (a["l_medical_load"] || 0),
+        load_system: (a["l_system_load"] || 0),
+        load_parenting: (a["l_parenting_load"] || 0),
+        load_house: (a["l_house_load"] || 0),
+        load_money: (a["l_money_load"] || 0),
+        safety_feel: (a["s_emotional_safety"] || 0),
+        safety_blame: (a["s_fear_blame"] || 0),
+        safety_fear_end: (a["s_fear_abandonment"] || 0),
+        intimacy_emotional: (a["i_emotional_closeness"] || 0),
+        intimacy_physical: (a["i_physical_closeness"] || 0)
       };
-
-      // Stated values
-      scores.stated.partner += (answers["ideal_importance_closeness"] || 0);
-      scores.stated.partner += (answers["ideal_importance_intimacy"] || 0);
-      scores.stated.child += (answers["ideal_importance_child"] || 0);
-      scores.stated.work += (answers["ideal_importance_work"] || 0);
-      scores.stated.autonomy += (answers["ideal_importance_autonomy"] || 0);
-
-      // Revealed: from scenarios
-      const scenarioMap = {
-        one_hour_energy: {
-          partner_time: { partner: 2 },
-          child_time: { child: 2 },
-          work_admin: { work: 2 },
-          screens: { self_soothing: 2 },
-          chores: { house: 2 }
-        },
-        work_runs_over: {
-          protect_couple: { partner: 2 },
-          sacrifice_couple: { work: 2 },
-          sacrifice_rest: { work: 1, self_soothing: -1 },
-          messy_mix: { work: 1, self_soothing: 1 }
-        },
-        child_settled_evening: {
-          separate_collapse: { autonomy: 2 },
-          more_housework: { house: 2 },
-          one_seeks_other_withdraws: { partner: 1, autonomy: 1 },
-          intentional_together: { partner: 2 }
-        }
-      };
-
-      Object.entries(scenarioMap).forEach(([qid, mapping]) => {
-        const val = answers[qid];
-        if (!val) return;
-        const weights = mapping[val];
-        if (!weights) return;
-        Object.entries(weights).forEach(([k, v]) => {
-          if (scores.revealed[k] == null) scores.revealed[k] = 0;
-          scores.revealed[k] += v;
-        });
-      });
-
-      // Blockers: PDA / RSD / trauma / sensory
-      const pdaSlider = answers["demand_feels_like_run"] || 0;
-      scores.blockers.pda += pdaSlider;
-
-      const closenessFeel = answers["partner_wants_closeness_feel"];
-      if (closenessFeel === "bit_pressure") scores.blockers.pda += 2;
-      if (closenessFeel === "demand") scores.blockers.pda += 4;
-
-      const rsdStory = answers["rsd_distance_story"];
-      if (rsdStory === "angry") scores.blockers.rsd += 3;
-      if (rsdStory === "my_fault") scores.blockers.rsd += 4;
-      if (rsdStory === "dont_want_me") scores.blockers.rsd += 5;
-
-      const shutsDown = answers["shuts_down_desire"] || [];
-      if (shutsDown.includes("feeling_criticised")) scores.blockers.rsd += 2;
-      if (shutsDown.includes("feeling_task")) scores.blockers.pda += 2;
-      if (shutsDown.includes("sensory_overload")) scores.blockers.sensory += 3;
-      if (shutsDown.includes("unsafe_on_edge")) scores.blockers.trauma += 4;
-
-      // Green / red flags
-      const green = answers["closeness_easier_when"] || [];
-      const red = answers["shuts_down_desire"] || [];
-      scores.greenFlags = green;
-      scores.redFlags = red;
-
       return scores;
     }
 
-    function computeCoupleSummary() {
-      const users = getActiveUsers();
-      const perUser = {};
-      users.forEach(u => {
-        perUser[u.id] = computeScoresForUser(u.id);
-      });
+    function buildNarrative(userId, label) {
+      const a = state.answers[userId] || {};
+      const s = computeScoresForUser(userId);
 
-      // simple gap detection: stated vs revealed for partner
-      function gapLabel(scores) {
-        const statedPartner = scores.stated.partner;
-        const revealedPartner = scores.revealed.partner || 0;
-        if (statedPartner >= 14 && revealedPartner <= 2) {
-          return "Partner connection is highly valued in theory but often sacrificed in practice.";
-        }
-        if (statedPartner >= 10 && revealedPartner >= 3) {
-          return "Partner connection is both valued and shows up in your choices when you have capacity.";
-        }
-        if (statedPartner <= 6 && revealedPartner >= 3) {
-          return "You may be under-reporting how much your choices lean toward partner connection.";
-        }
-        return "Your stated and lived priorities around partner connection are mixed but informative.";
+      const lines = [];
+      lines.push(`User: ${label}`);
+      lines.push("");
+
+      const wantsPartnerHigh = s.values_partner >= 7;
+      const timeLow = s.reality_time <= 3;
+      const teamLow = s.reality_team <= 4;
+      const emoLow = s.intimacy_emotional <= 4;
+      const physLow = s.intimacy_physical <= 4;
+
+      if (wantsPartnerHigh && (timeLow || emoLow || physLow)) {
+        lines.push("You rate this relationship as very important, but in reality it’s getting very little time, closeness, or energy.");
+      } else if (wantsPartnerHigh) {
+        lines.push("You rate this relationship as very important, and some of that does show up in reality.");
+      } else {
+        lines.push("You don’t rate the relationship as your absolute top priority right now, which may reflect how overloaded you are.");
       }
 
-      const notes = {};
-      users.forEach(u => {
-        notes[u.id] = gapLabel(perUser[u.id]);
-      });
-
-      // alignment / clash: partner vs work vs child
-      let alignment = [];
-      let clash = [];
-
-      if (users.length === 2) {
-        const a = perUser[users[0].id];
-        const b = perUser[users[1].id];
-
-        const aPartner = a.stated.partner + (a.revealed.partner || 0);
-        const bPartner = b.stated.partner + (b.revealed.partner || 0);
-        const aWork = a.stated.work + (a.revealed.work || 0);
-        const bWork = b.stated.work + (b.revealed.work || 0);
-        const aChild = a.stated.child + (a.revealed.child || 0);
-        const bChild = b.stated.child + (b.revealed.child || 0);
-
-        if (aPartner > 10 && bPartner > 10) {
-          alignment.push("You both care a lot about couple connection, even if it’s hard to enact.");
-        }
-        if (aChild > 10 && bChild > 10) {
-          alignment.push("You both strongly prioritise your child’s wellbeing.");
-        }
-        if (bWork > aWork + 4) {
-          clash.push("Work pulls your partner harder than it pulls you, which may leave you feeling sidelined.");
-        }
-        if (aWork > bWork + 4) {
-          clash.push("Work pulls you harder than it pulls your partner, which may leave them feeling secondary.");
-        }
-        if (aChild > aPartner + 4 || bChild > bPartner + 4) {
-          clash.push("Parenting often wins over couple time, which can quietly starve the relationship.");
-        }
+      const totalLoad = s.load_medical + s.load_system + s.load_parenting + s.load_house + s.load_money;
+      if (totalLoad >= 25) {
+        lines.push("Your life load (medical, systems, parenting, house, money) is extremely high. It would be surprising if the relationship didn’t feel crushed under this.");
+      } else if (totalLoad >= 15) {
+        lines.push("Your life load is heavy and clearly eats into what you have left for the relationship.");
       }
 
-      return { perUser, notes, alignment, clash };
+      if (s.blockers_rsd >= 7) {
+        lines.push("Fear of rejection or being the problem (RSD) is a major driver in how you experience this relationship.");
+      }
+      if (s.blockers_pda >= 7) {
+        lines.push("Feeling pressured or expected to connect (PDA) makes you want to avoid or shut down a lot of the time.");
+      }
+      if (s.blockers_trauma >= 7) {
+        lines.push("Past experiences and trauma make it hard for your nervous system to believe this relationship is safe.");
+      }
+      if (s.blockers_sensory >= 7) {
+        lines.push("Sensory overload and chaos make it very hard for you to be present with your partner.");
+      }
+
+      if (s.safety_feel <= 4) {
+        lines.push("You do not currently feel emotionally safe in this relationship.");
+      } else if (s.safety_feel <= 6) {
+        lines.push("Your sense of emotional safety here is fragile and easily shaken.");
+      }
+
+      if (s.safety_blame >= 7) {
+        lines.push("You often feel blamed or seen as the problem, which will make you defensive, shut down, or over-explain.");
+      }
+
+      if (s.safety_fear_end >= 7) {
+        lines.push("You are strongly afraid this relationship might not survive as things are. That fear alone is a huge load.");
+      }
+
+      const shut = a["i_shut_down_reasons"] || [];
+      if (shut.length) {
+        lines.push("");
+        lines.push("Things that reliably shut down your desire for closeness:");
+        shut.forEach(id => {
+          const opt = QUESTIONS.intimacy.find(q => q.id === "i_shut_down_reasons")
+            .options.find(o => o.id === id);
+          if (opt) lines.push(`- ${opt.label}`);
+        });
+      }
+
+      return lines.join("\n");
     }
 
-    // -----------------------------
-    // Rendering
-    // -----------------------------
+    function buildCombinedSummary() {
+      const users = getActiveUsers();
+      const selfScores = computeScoresForUser("self");
+      const partnerScores = users.length === 2 ? computeScoresForUser("partner") : null;
+
+      const lines = [];
+      lines.push("=== RELATIONSHIP REALITY CHECK – COMBINED SUMMARY ===");
+      lines.push("");
+
+      if (users.length === 2) {
+        const bothValuePartnerHigh =
+          selfScores.values_partner >= 7 && partnerScores.values_partner >= 7;
+        if (bothValuePartnerHigh) {
+          lines.push("You both say this relationship really matters. That’s not the problem.");
+        } else if (selfScores.values_partner >= 7 && partnerScores.values_partner < 7) {
+          lines.push("You rate the relationship as central; your partner may be more split between relationship, work, autonomy, or survival.");
+        } else if (selfScores.values_partner < 7 && partnerScores.values_partner >= 7) {
+          lines.push("Your partner rates the relationship as central; you may be more in survival mode or emotionally checked out.");
+        } else {
+          lines.push("Neither of you is currently holding the relationship as the clear top priority, which usually means life load is winning.");
+        }
+
+        const selfTime = selfScores.reality_time;
+        const partnerTime = partnerScores.reality_time;
+        if (selfTime <= 3 && partnerTime <= 3) {
+          lines.push("Both of you report very little intentional time together. The relationship is running on fumes.");
+        }
+
+        const selfSafety = selfScores.safety_feel;
+        const partnerSafety = partnerScores.safety_feel;
+        if (selfSafety <= 4 || partnerSafety <= 4) {
+          lines.push("At least one of you does not feel emotionally safe here. That is a core problem, not a side issue.");
+        }
+
+        const selfFearEnd = selfScores.safety_fear_end;
+        const partnerFearEnd = partnerScores.safety_fear_end;
+        if (selfFearEnd >= 7 || partnerFearEnd >= 7) {
+          lines.push("There is a strong fear that this relationship might not survive as things are. That fear needs naming, not hiding.");
+        }
+
+        const selfLoad = selfScores.load_medical + selfScores.load_system + selfScores.load_parenting + selfScores.load_house + selfScores.load_money;
+        const partnerLoad = partnerScores.load_medical + partnerScores.load_system + partnerScores.load_parenting + partnerScores.load_house + partnerScores.load_money;
+        if (selfLoad >= 20 || partnerLoad >= 20) {
+          lines.push("Life load for at least one of you is at ‘no spare capacity’ levels. The relationship is competing with survival tasks.");
+        }
+
+        const selfRSD = selfScores.blockers_rsd;
+        const partnerPDA = partnerScores.blockers_pda;
+        if (selfRSD >= 7 && partnerPDA >= 7) {
+          lines.push("Pattern: one of you is terrified of rejection and being the problem; the other is terrified of pressure and being demanded from. This is a perfect storm: reaching out feels risky to one and suffocating to the other.");
+        }
+      } else {
+        lines.push("Solo mode: this is your view of the relationship and the load around it.");
+      }
+
+      lines.push("");
+      lines.push("=== INDIVIDUAL NERVOUS SYSTEM PROFILES ===");
+      lines.push("");
+      lines.push(buildNarrative("self", "You"));
+      if (users.length === 2) {
+        lines.push("");
+        lines.push(buildNarrative("partner", "Partner"));
+      }
+
+      lines.push("");
+      lines.push("=== TINY LEVERS (NOT FIXES, JUST PRESSURE RELEASE VALVES) ===");
+      lines.push("");
+      lines.push("- Protect one small window (20–30 minutes) a week where the only rule is: no fixing, no feedback, no logistics. Just co-exist kindly.");
+      lines.push("- When you notice RSD or PDA or trauma kicking off, name the state (“my rejection brain is loud”, “my pressure brain is loud”) instead of accusing each other.");
+      lines.push("- If both of you are overloaded, treat the relationship as something to be protected from the load, not another task added on top of it.");
+
+      return lines.join("\n");
+    }
 
     function render() {
       const app = document.getElementById("app");
@@ -895,22 +910,22 @@
         app.innerHTML = renderSummarySection();
       }
 
-      attachEventHandlers();
-      renderProgressBar();
+      attachEvents();
+      updateProgress();
     }
 
     function renderModeSection() {
       return `
         <div class="card">
           <div class="section-label">Step 1</div>
-          <h2>How do you want to use this?</h2>
-          <p>This isn’t about blame. It’s about seeing what your brains and bodies actually do under load.</p>
+          <h2>How are you using this?</h2>
+          <p>Answer honestly, not aspirationally. This is about what’s actually happening, not what you wish was happening.</p>
           <div class="mode-toggle">
             <button class="mode-btn ${state.mode === "solo" ? "active" : ""}" data-mode="solo">
-              Solo<br /><span>Just map your own patterns</span>
+              Solo<br /><span>Just your view</span>
             </button>
             <button class="mode-btn ${state.mode === "couple" ? "active" : ""}" data-mode="couple">
-              Couple<br /><span>Two linked profiles, then a shared summary</span>
+              Couple<br /><span>Two separate passes, one combined summary</span>
             </button>
           </div>
           <div class="nav-row" style="margin-top:16px;">
@@ -926,79 +941,68 @@
       `;
     }
 
+    function sectionDescription(id) {
+      switch (id) {
+        case "values":
+          return "What you say you want from this relationship and your life.";
+        case "reality":
+          return "What actually happens when time, energy, and stress are real.";
+        case "blockers":
+          return "What your nervous system does that hijacks connection.";
+        case "load":
+          return "The life load that quietly crushes your capacity for the relationship.";
+        case "safety":
+          return "How safe, blamed, or at-risk this relationship feels from the inside.";
+        case "intimacy":
+          return "How close you actually feel, and what shuts that down.";
+        default:
+          return "";
+      }
+    }
+
     function renderQuestionSection(section) {
       const user = getCurrentUser();
       const questions = QUESTIONS[section.id] || [];
-      const totalSections = SECTIONS.length - 2; // exclude mode + summary
-      const sectionIndexForProgress = Math.max(0, state.currentSectionIndex - 1);
-      const sectionProgress = (sectionIndexForProgress / totalSections) * 100;
-
-      const userLabel =
-        state.mode === "solo"
-          ? "You"
-          : user.id === "self"
-          ? "You"
-          : "Partner";
-
-      const userBadge = `
-        <span class="badge">
-          <span class="badge-dot"></span>
-          ${userLabel}
-        </span>
-      `;
-
-      const questionsHtml = questions
-        .map(q => renderQuestion(user.id, q))
-        .join("");
-
       const users = getActiveUsers();
-      const showUserSwitcher = users.length === 2;
+      const userLabel = state.mode === "solo"
+        ? "You"
+        : user.id === "self"
+        ? "You"
+        : "Partner";
+
+      const questionsHtml = questions.map(q => renderQuestion(user.id, q)).join("");
 
       return `
         <div class="card">
           <div class="section-label">${section.title}</div>
           <h2>${section.title}</h2>
           <p>${sectionDescription(section.id)}</p>
-          <div style="margin-bottom:8px;">${userBadge}</div>
+          <div style="margin-bottom:8px;">
+            <span class="badge"><span class="badge-dot"></span>${userLabel}</span>
+          </div>
           ${questionsHtml}
           <div class="nav-row">
-            <button class="nav-btn" id="prev-btn">${showUserSwitcher && state.currentUserIndex > 0 ? "← Back to you" : "← Back"}</button>
-            <button class="nav-btn primary" id="next-btn">${showUserSwitcher && state.currentUserIndex === 0 ? "Next: partner →" : "Next →"}</button>
+            <button class="nav-btn" id="prev-btn">← Back</button>
+            <button class="nav-btn primary" id="next-btn">${
+              users.length === 2 && state.currentUserIndex === 0 ? "Next: partner →" : "Next →"
+            }</button>
           </div>
           <div class="progress">
             <span>Progress</span>
-            <span>${Math.round(sectionProgress)}%</span>
+            <span>0%</span>
           </div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${sectionProgress}%;"></div></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:0%;"></div></div>
         </div>
       `;
-    }
-
-    function sectionDescription(id) {
-      switch (id) {
-        case "baseline":
-          return "First, capture what you believe you prioritise in an ideal world. This is the story you tell yourself.";
-        case "stress":
-          return "Now, map how stress and energy actually move through your system. This shapes what’s even possible.";
-        case "scenarios":
-          return "These small, concrete choices show what tends to win when time, energy, and attention are limited.";
-        case "avoidance":
-          return "Here we gently map demand-avoidance and rejection sensitivity. No judgement—just patterns.";
-        case "intimacy":
-          return "Finally, we look at what makes closeness easier or harder, without pressure or expectation.";
-        default:
-          return "";
-      }
     }
 
     function renderQuestion(userId, q) {
       const answer = getAnswer(userId, q.id);
       if (q.type === "slider") {
-        const val = answer ?? Math.round((q.max - q.min) / 2);
+        const val = answer ?? 5;
         return `
           <div class="question">
             <div class="question-label">${q.label}</div>
-            ${q.help ? `<div class="question-help">${q.help}</div>` : ""}
             <div class="slider-row">
               <input type="range" min="${q.min}" max="${q.max}" value="${val}" data-qid="${q.id}" class="slider-input" />
               <div class="slider-value">${val}</div>
@@ -1006,177 +1010,54 @@
           </div>
         `;
       }
-
       if (q.type === "single") {
         return `
           <div class="question">
             <div class="question-label">${q.label}</div>
-            ${q.help ? `<div class="question-help">${q.help}</div>` : ""}
             <div class="options">
               ${q.options
                 .map(opt => {
                   const selected = answer === opt.id ? "selected" : "";
-                  return `
-                    <button class="option-btn ${selected}" data-qid="${q.id}" data-optid="${opt.id}">
-                      ${opt.label}
-                    </button>
-                  `;
+                  return `<button class="option-btn ${selected}" data-qid="${q.id}" data-optid="${opt.id}">${opt.label}</button>`;
                 })
                 .join("")}
             </div>
           </div>
         `;
       }
-
       if (q.type === "multi") {
         const selected = Array.isArray(answer) ? answer : [];
         return `
           <div class="question">
             <div class="question-label">${q.label}</div>
-            ${q.help ? `<div class="question-help">${q.help}</div>` : ""}
             <div class="chips">
               ${q.options
                 .map(opt => {
                   const isSel = selected.includes(opt.id) ? "selected" : "";
-                  return `
-                    <button class="chip ${isSel}" data-qid="${q.id}" data-optid="${opt.id}">
-                      ${opt.label}
-                    </button>
-                  `;
+                  return `<button class="chip ${isSel}" data-qid="${q.id}" data-optid="${opt.id}">${opt.label}</button>`;
                 })
                 .join("")}
             </div>
           </div>
         `;
       }
-
       return "";
     }
 
     function renderSummarySection() {
       const users = getActiveUsers();
-      const { perUser, notes, alignment, clash } = computeCoupleSummary();
-
-      const userSummaries = users
-        .map(u => {
-          const scores = perUser[u.id];
-          const label = u.id === "self" ? "You" : "Partner";
-
-          const statedTags = Object.entries(scores.stated)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 4)
-            .map(([k, v]) => {
-              if (v <= 0) return null;
-              return `<span class="summary-tag strong">${k} · ${v.toFixed(1)}</span>`;
-            })
-            .filter(Boolean)
-            .join("");
-
-          const revealedTags = Object.entries(scores.revealed)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 4)
-            .map(([k, v]) => {
-              if (v === 0) return null;
-              return `<span class="summary-tag">${k} · ${v.toFixed(1)}</span>`;
-            })
-            .filter(Boolean)
-            .join("");
-
-          const blockersTags = Object.entries(scores.blockers)
-            .sort((a, b) => b[1] - a[1])
-            .filter(([, v]) => v > 0)
-            .map(([k, v]) => `<span class="summary-tag gap">${k} · ${v.toFixed(1)}</span>`)
-            .join("");
-
-          const greenLabels = scores.greenFlags
-            .map(id => {
-              const q = QUESTIONS.intimacy.find(x => x.id === "closeness_easier_when");
-              const opt = q?.options.find(o => o.id === id);
-              return opt ? opt.label : null;
-            })
-            .filter(Boolean);
-
-          const redLabels = scores.redFlags
-            .map(id => {
-              const q = QUESTIONS.intimacy.find(x => x.id === "shuts_down_desire");
-              const opt = q?.options.find(o => o.id === id);
-              return opt ? opt.label : null;
-            })
-            .filter(Boolean);
-
-          return `
-            <div class="summary-card">
-              <h3>${label}</h3>
-              <div class="question-help">${notes[u.id]}</div>
-              <div style="margin-top:6px;font-size:0.8rem;">Stated priorities (ideal story):</div>
-              <div class="summary-tag-row">${statedTags || '<span class="summary-tag">No data yet</span>'}</div>
-              <div style="margin-top:6px;font-size:0.8rem;">Revealed priorities (under load):</div>
-              <div class="summary-tag-row">${revealedTags || '<span class="summary-tag">No data yet</span>'}</div>
-              <div style="margin-top:6px;font-size:0.8rem;">Blockers that hijack connection:</div>
-              <div class="summary-tag-row">${blockersTags || '<span class="summary-tag">None strongly flagged</span>'}</div>
-              <div style="margin-top:6px;font-size:0.8rem;">Closeness is easier when:</div>
-              <div class="summary-tag-row">
-                ${
-                  greenLabels.length
-                    ? greenLabels.map(l => `<span class="summary-tag align">${l}</span>`).join("")
-                    : '<span class="summary-tag">Not mapped yet</span>'
-                }
-              </div>
-              <div style="margin-top:6px;font-size:0.8rem;">Closeness shuts down when:</div>
-              <div class="summary-tag-row">
-                ${
-                  redLabels.length
-                    ? redLabels.map(l => `<span class="summary-tag gap">${l}</span>`).join("")
-                    : '<span class="summary-tag">Not mapped yet</span>'
-                }
-              </div>
-            </div>
-          `;
-        })
-        .join("");
-
-      const alignmentHtml =
-        alignment.length > 0
-          ? alignment.map(a => `<li>${a}</li>`).join("")
-          : "<li>You likely share more values than it currently feels like—this tool just scratched the surface.</li>";
-
-      const clashHtml =
-        clash.length > 0
-          ? clash.map(c => `<li>${c}</li>`).join("")
-          : "<li>No major clashes flagged from this small set of questions.</li>";
-
-      const tinyLevers = `
-        <div class="tiny-levers">
-          <strong>Tiny levers (no homework, just options):</strong>
-          <ul>
-            <li>Protect one low-pressure 20–30 minute window a week where the only rule is “no fixing, no phones, no big talks”. Just co-exist kindly.</li>
-            <li>When you notice a blocker (PDA, RSD, shutdown) kicking in, name the state (“my brain is in run-away mode”) rather than the story (“you don’t want me”).</li>
-            <li>Experiment with one “green flag” condition at a time (e.g., alone time first, or clearer invites) instead of trying to fix everything at once.</li>
-          </ul>
-        </div>
-      `;
+      const combinedText = buildCombinedSummary();
 
       return `
         <div class="card">
-          <div class="section-label">Summary</div>
-          <h2>What your patterns are quietly saying</h2>
-          <p>This isn’t a verdict. It’s a snapshot of how stress, neurodivergence, and life load shape your choices.</p>
-          <div class="summary-grid">
-            ${userSummaries}
+          <div class="section-label">Summary & export</div>
+          <h2>What this is actually saying</h2>
+          <p>This is not a verdict. It’s a snapshot of how bad it feels, why it feels that bad, and where the pressure is coming from.</p>
+          <div class="summary-card export-area">
+            <h3>Copy-paste report (for you, or for an AI)</h3>
+            <textarea id="export-text">${combinedText}</textarea>
+            <button class="export-btn" id="copy-btn">Copy to clipboard</button>
           </div>
-          <div class="summary-card" style="margin-top:10px;">
-            <h3>Where you align</h3>
-            <ul style="margin:4px 0 0;padding-left:18px;font-size:0.82rem;">
-              ${alignmentHtml}
-            </ul>
-          </div>
-          <div class="summary-card" style="margin-top:8px;">
-            <h3>Where it quietly clashes</h3>
-            <ul style="margin:4px 0 0;padding-left:18px;font-size:0.82rem;">
-              ${clashHtml}
-            </ul>
-          </div>
-          ${tinyLevers}
           <div class="nav-row" style="margin-top:14px;">
             <button class="nav-btn" id="summary-back-btn">← Back</button>
             <button class="nav-btn primary" id="reset-btn">Start over</button>
@@ -1190,12 +1071,12 @@
       `;
     }
 
-    function renderProgressBar() {
-      const section = SECTIONS[state.currentSectionIndex];
+    function updateProgress() {
       const bar = document.querySelector(".progress-fill");
       const label = document.querySelector(".progress span:last-child");
       if (!bar || !label) return;
 
+      const section = SECTIONS[state.currentSectionIndex];
       if (section.kind === "mode") {
         bar.style.width = "0%";
         label.textContent = "0%";
@@ -1207,23 +1088,19 @@
         return;
       }
 
-      const totalSections = SECTIONS.length - 2; // exclude mode + summary
-      const sectionIndexForProgress = Math.max(0, state.currentSectionIndex - 1);
-      const pct = (sectionIndexForProgress / totalSections) * 100;
+      const totalQuestionSections = SECTIONS.filter(s => s.kind === "questions").length;
+      const currentIndexAmongQuestions = SECTIONS
+        .filter(s => s.kind === "questions")
+        .findIndex(s => s.id === section.id);
+      const pct = ((currentIndexAmongQuestions + 1) / totalQuestionSections) * 100;
       bar.style.width = pct + "%";
       label.textContent = Math.round(pct) + "%";
     }
 
-    // -----------------------------
-    // Events
-    // -----------------------------
-
-    function attachEventHandlers() {
-      const modeButtons = document.querySelectorAll(".mode-btn");
-      modeButtons.forEach(btn => {
+    function attachEvents() {
+      document.querySelectorAll(".mode-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           const mode = btn.getAttribute("data-mode");
-          if (!mode) return;
           state.mode = mode;
           saveState();
           render();
@@ -1261,11 +1138,8 @@
         nextBtn.addEventListener("click", () => {
           const isLastQuestionSection =
             SECTIONS[state.currentSectionIndex + 1]?.kind === "summary";
-          if (isLastQuestionSection && state.mode === "solo") {
-            state.currentSectionIndex++;
-            saveState();
-            render();
-          } else if (isLastQuestionSection && state.mode === "couple" && state.currentUserIndex === 1) {
+          const users = getActiveUsers();
+          if (isLastQuestionSection && (state.mode === "solo" || (state.mode === "couple" && state.currentUserIndex === users.length - 1))) {
             state.currentSectionIndex++;
             state.currentUserIndex = 0;
             saveState();
@@ -1286,9 +1160,8 @@
         });
       }
 
-      // sliders
       document.querySelectorAll(".slider-input").forEach(slider => {
-        slider.addEventListener("input", e => {
+        slider.addEventListener("input", () => {
           const qid = slider.getAttribute("data-qid");
           const val = Number(slider.value);
           const user = getCurrentUser();
@@ -1298,7 +1171,6 @@
         });
       });
 
-      // single-choice
       document.querySelectorAll(".option-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           const qid = btn.getAttribute("data-qid");
@@ -1312,7 +1184,6 @@
         });
       });
 
-      // multi-choice
       document.querySelectorAll(".chip").forEach(chip => {
         chip.addEventListener("click", () => {
           const qid = chip.getAttribute("data-qid");
@@ -1329,11 +1200,18 @@
           chip.classList.toggle("selected");
         });
       });
-    }
 
-    // -----------------------------
-    // Init
-    // -----------------------------
+      const copyBtn = document.getElementById("copy-btn");
+      if (copyBtn) {
+        copyBtn.addEventListener("click", () => {
+          const ta = document.getElementById("export-text");
+          ta.select();
+          document.execCommand("copy");
+          copyBtn.textContent = "Copied";
+          setTimeout(() => (copyBtn.textContent = "Copy to clipboard"), 1500);
+        });
+      }
+    }
 
     render();
   </script>
