@@ -1,442 +1,1341 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Plate Manager — Triage & Plan</title>
-<style>
-  :root{
-    --bg:#f6f7fb; --card:#fff; --muted:#6b7280; --accent:#0f62fe;
-    --danger:#ef4444; --ok:#10b981; --glass: rgba(255,255,255,0.6);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  }
-  body{margin:0;background:linear-gradient(180deg,#eef2ff 0%,var(--bg) 100%);color:#111;}
-  header{background:var(--card);padding:14px 18px;border-bottom:1px solid #e6e9ef;display:flex;gap:12px;align-items:center;position:sticky;top:0;z-index:5}
-  header h1{font-size:18px;margin:0}
-  .container{display:grid;grid-template-columns:320px 1fr 360px;gap:18px;padding:18px;max-width:1300px;margin:18px auto;}
-  .panel{background:var(--card);border-radius:10px;padding:12px;box-shadow:0 6px 18px rgba(12,15,30,0.06);}
-  .left{height:calc(100vh - 120px);overflow:auto;}
-  .project{padding:10px;border-radius:8px;margin-bottom:8px;cursor:pointer;border:1px solid transparent}
-  .project.active{border-color:var(--accent);box-shadow:0 6px 18px rgba(15,98,254,0.06)}
-  .meta{font-size:13px;color:var(--muted)}
-  .controls{display:flex;gap:8px;align-items:center;margin-bottom:8px}
-  input,textarea,select,button{font:inherit}
-  .task-list{display:flex;flex-direction:column;gap:8px}
-  .task{display:flex;justify-content:space-between;gap:8px;padding:10px;border-radius:8px;border:1px solid #eef2ff;align-items:center}
-  .task .leftcol{display:flex;gap:8px;align-items:center}
-  .pill{font-size:12px;padding:6px 8px;border-radius:999px;background:#f1f5f9;color:#0f172a}
-  .kanban{display:flex;gap:12px;overflow:auto;padding-top:8px}
-  .col{min-width:220px;background:linear-gradient(180deg,#fff,#fbfdff);padding:8px;border-radius:8px;border:1px solid #eef2ff}
-  .col h4{margin:6px 0 8px 0;font-size:14px}
-  footer{padding:12px;text-align:center;color:var(--muted);font-size:13px}
-  .small{font-size:13px;color:var(--muted)}
-  .danger{color:var(--danger)}
-  .ok{color:var(--ok)}
-  .hidden{display:none}
-  .top-actions{margin-left:auto;display:flex;gap:8px}
-  .search{flex:1;padding:8px;border-radius:8px;border:1px solid #e6e9ef}
-  .tag{display:inline-block;background:#eef2ff;color:var(--accent);padding:4px 8px;border-radius:999px;font-size:12px;margin-right:6px}
-  .note{white-space:pre-wrap;background:#fbfbff;padding:8px;border-radius:8px;border:1px dashed #eef2ff}
-  @media (max-width:980px){.container{grid-template-columns:1fr;}.left{order:2}.right{order:3}}
-</style>
+  <meta charset="UTF-8" />
+  <title>Patterns, Not Promises</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050510;
+      --card: #141428;
+      --accent: #ff7ad9;
+      --accent-soft: rgba(255, 122, 217, 0.15);
+      --text: #f5f5ff;
+      --muted: #a0a0c0;
+      --danger: #ff5c7a;
+      --ok: #7dffb3;
+      --border: #2a2a4a;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+      --radius-lg: 18px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #1a1630 0, #050510 55%, #020208 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px 16px 40px;
+    }
+
+    header {
+      padding: 16px 18px 14px;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      background: linear-gradient(135deg, #2a1b4a, #141428);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      margin: 0 0 4px;
+      font-size: 1.4rem;
+      letter-spacing: 0.03em;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .pill strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .card {
+      margin-top: 18px;
+      padding: 16px 16px 18px;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at top left, #26224a 0, #141428 40%, #090918 100%);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+    }
+
+    .card p {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .mode-toggle {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--muted);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, var(--accent), #ffc46b);
+      color: #1a1024;
+      border-color: transparent;
+      font-weight: 600;
+    }
+
+    .mode-btn span {
+      opacity: 0.8;
+    }
+
+    .question {
+      margin-top: 12px;
+      padding: 10px 10px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(5, 5, 20, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .question-label {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .question-help {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: 7px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(10, 10, 30, 0.8);
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.12s ease-out;
+    }
+
+    .option-btn small {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .option-btn.selected {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(255, 122, 217, 0.4);
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+    }
+
+    .slider-value {
+      min-width: 32px;
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.8rem;
+      background: rgba(10, 10, 30, 0.8);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.12s ease-out;
+    }
+
+    .chip.selected {
+      background: var(--accent-soft);
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .nav-btn {
+      flex: 1;
+      padding: 9px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--text);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+    }
+
+    .nav-btn.primary {
+      background: linear-gradient(135deg, var(--accent), #ffc46b);
+      color: #1a1024;
+      border-color: transparent;
+      font-weight: 600;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .progress {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .progress-bar {
+      margin-top: 4px;
+      width: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), #ffc46b);
+      transition: width 0.2s ease-out;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .summary-card {
+      padding: 10px 10px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(5, 5, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.85rem;
+    }
+
+    .summary-card h3 {
+      margin: 0 0 4px;
+      font-size: 0.9rem;
+    }
+
+    .summary-tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .summary-tag {
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+    }
+
+    .summary-tag.strong {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .summary-tag.gap {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .summary-tag.align {
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+
+    .tiny-levers {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .tiny-levers ul {
+      padding-left: 18px;
+      margin: 4px 0 0;
+    }
+
+    .tiny-levers li {
+      margin-bottom: 2px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--muted);
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    @media (max-width: 600px) {
+      header {
+        border-radius: 0 0 14px 14px;
+      }
+      .card {
+        border-radius: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
-<header class="panel">
-  <h1>Plate Manager</h1>
-  <div class="top-actions">
-    <input id="globalSearch" class="search" placeholder="Search projects, tasks, notes..." />
-    <button id="importBtn">Import</button>
-    <button id="exportBtn">Export</button>
+  <div class="app-shell">
+    <header>
+      <h1>Patterns, Not Promises</h1>
+      <p>Map what your nervous systems actually prioritise under stress, not what you wish you prioritised.</p>
+      <div class="pill-row">
+        <div class="pill"><strong>ND-aware</strong> ADHD · PDA · RSD · Autism · PMDD</div>
+        <div class="pill">Low-pressure · No “shoulds” · On-device only</div>
+      </div>
+    </header>
+
+    <main id="app"></main>
   </div>
-</header>
 
-<main class="container">
-  <!-- Left: Projects -->
-  <aside class="panel left" aria-label="Projects">
-    <div style="display:flex;gap:8px;margin-bottom:8px">
-      <input id="newProjectName" placeholder="New project (e.g., Hollie)" style="flex:1;padding:8px;border-radius:8px;border:1px solid #e6e9ef" />
-      <button id="addProject">Add</button>
-    </div>
-    <div id="projects"></div>
-    <hr />
-    <div class="small">Quick filters</div>
-    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-      <button class="pill" data-filter="urgent">Urgent</button>
-      <button class="pill" data-filter="health">Health</button>
-      <button class="pill" data-filter="work">Work</button>
-      <button class="pill" data-filter="family">Family</button>
-      <button class="pill" data-filter="finance">Money</button>
-    </div>
-  </aside>
+  <script>
+    // -----------------------------
+    // Data: questions & structure
+    // -----------------------------
 
-  <!-- Middle: Tasks & Kanban -->
-  <section class="panel" id="mainPanel">
-    <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
-      <h2 id="projectTitle">Select a project</h2>
-      <div class="meta" id="projectMeta"></div>
-      <div style="margin-left:auto;display:flex;gap:8px">
-        <button id="addTaskBtn" disabled>Add task</button>
-        <button id="generatePlanBtn" disabled>Generate plan</button>
-      </div>
-    </div>
-
-    <div id="taskForm" class="hidden" style="margin-bottom:12px">
-      <input id="taskTitle" placeholder="Task title" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6e9ef;margin-bottom:8px" />
-      <textarea id="taskNotes" placeholder="Notes / steps" style="width:100%;padding:8px;border-radius:8px;border:1px solid #e6e9ef;margin-bottom:8px"></textarea>
-      <div style="display:flex;gap:8px">
-        <select id="taskPriority">
-          <option value="low">Low</option>
-          <option value="med">Medium</option>
-          <option value="high">High</option>
-          <option value="urgent">Urgent</option>
-        </select>
-        <input id="taskDue" type="date" />
-        <input id="taskTags" placeholder="tags (comma)" />
-        <button id="saveTask">Save</button>
-        <button id="cancelTask">Cancel</button>
-      </div>
-    </div>
-
-    <div style="display:flex;gap:12px">
-      <div style="flex:1">
-        <h3 style="margin:6px 0">Tasks</h3>
-        <div id="tasks" class="task-list"></div>
-      </div>
-      <div style="width:360px">
-        <h3 style="margin:6px 0">Notes & Timeline</h3>
-        <div id="notesArea" class="note" contenteditable="true" aria-label="Project notes">Select a project to see notes.</div>
-      </div>
-    </div>
-
-    <hr style="margin:12px 0" />
-    <h3 style="margin:6px 0">Kanban</h3>
-    <div class="kanban" id="kanban">
-      <div class="col" data-col="todo"><h4>To do</h4><div class="col-list"></div></div>
-      <div class="col" data-col="doing"><h4>Doing</h4><div class="col-list"></div></div>
-      <div class="col" data-col="done"><h4>Done</h4><div class="col-list"></div></div>
-    </div>
-  </section>
-
-  <!-- Right: Overview & Actions -->
-  <aside class="panel right" style="height:calc(100vh - 120px);overflow:auto">
-    <h3 style="margin-top:0">Overview</h3>
-    <div id="overview" class="small">No project selected.</div>
-
-    <hr />
-    <h4>Quick actions</h4>
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <button id="prioritiseHigh">Mark all high priority</button>
-      <button id="clearDone">Clear completed</button>
-      <button id="resetData" class="danger">Reset all data</button>
-    </div>
-
-    <hr />
-    <h4>Export / Share</h4>
-    <div class="small">Use Export to create a JSON snapshot you can attach to emails or upload to GitHub.</div>
-  </aside>
-</main>
-
-<footer>
-  Plate Manager — local-only data. Use Export to back up. Built for Safari.
-</footer>
-
-<script>
-/* ===== Simple local app state ===== */
-const STORAGE_KEY = 'plate_manager_v1';
-let state = { projects: [], selectedId: null };
-
-/* ===== Utilities ===== */
-const uid = ()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-const el = id=>document.getElementById(id);
-const save = ()=>localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-const load = ()=>{
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if(raw) state = JSON.parse(raw);
-  renderProjects();
-  if(state.selectedId) selectProject(state.selectedId);
-  // If no projects exist, create starter projects mapped to your document
-  if(!state.projects.length){
-    const starters = [
-      { name:'Hollie — Health', notes:'Hollie’s unmanaged and unmedicated ADHD: over 2 years with no medication.', tasks:[
-        { id:uid(), title:'Call GP: request ADHD re-referral and BP home monitor', notes:'Ask GP to document non-stimulant options and BP plan.', priority:'urgent', due:null, tags:['health','GP'], status:'todo', created:Date.now() },
-        { id:uid(), title:'Request written summary from CMHT', notes:'Ask for clear next steps and medication considerations.', priority:'high', due:null, tags:['CMHT'], status:'todo', created:Date.now() }
-      ]},
-      { name:'Work & Legal', notes:'Employment tribunal and settlement; solicitor actions.', tasks:[
-        { id:uid(), title:'Email solicitor: confirm Open Letter and ACAS steps', notes:'Request written clarification and next steps.', priority:'urgent', due:null, tags:['legal'], status:'todo', created:Date.now() },
-        { id:uid(), title:'Prepare ET evidence folder', notes:'Collect emails, dates, and key documents.', priority:'high', due:null, tags:['evidence'], status:'todo', created:Date.now() }
-      ]},
-      { name:'Grief & Self', notes:'Grandmother passed; miscarriage grief; self-care tasks.', tasks:[
-        { id:uid(), title:'Book one therapy session', notes:'Bring app notes to session.', priority:'high', due:null, tags:['therapy'], status:'todo', created:Date.now() },
-        { id:uid(), title:'Daily 20-minute walk', notes:'Recurring self-care.', priority:'med', due:null, tags:['self-care'], status:'todo', created:Date.now() }
-      ]},
-      { name:'Oscar', notes:'Child referrals and daily routines.', tasks:[
-        { id:uid(), title:'Confirm GP referral sent for Oscar', notes:'Check ADHD360 referral status.', priority:'high', due:null, tags:['child'], status:'todo', created:Date.now() }
-      ]},
-      { name:'House & Money', notes:'Repairs, PIP, finances.', tasks:[
-        { id:uid(), title:'Start PIP form draft', notes:'Complete first draft and save evidence.', priority:'urgent', due:null, tags:['PIP'], status:'todo', created:Date.now() },
-        { id:uid(), title:'List 5 essential repairs', notes:'Prioritise safety issues first.', priority:'high', due:null, tags:['repairs'], status:'todo', created:Date.now() }
-      ]}
+    const SECTIONS = [
+      { id: "mode", title: "Start", kind: "mode" },
+      { id: "baseline", title: "Baseline values", kind: "questions" },
+      { id: "stress", title: "Stress & energy", kind: "questions" },
+      { id: "scenarios", title: "Real-world tradeoffs", kind: "questions" },
+      { id: "avoidance", title: "Avoidance & safety", kind: "questions" },
+      { id: "intimacy", title: "Intimacy readiness", kind: "questions" },
+      { id: "summary", title: "Summary", kind: "summary" }
     ];
-    state.projects = starters.map(p=>({ id:uid(), ...p, created:Date.now() }));
-    save(); renderProjects();
-  }
-};
-const formatDate = d=>d?new Date(d).toLocaleDateString():'';
 
-/* ===== Project UI ===== */
-el('addProject').addEventListener('click', ()=>{
-  const name = el('newProjectName').value.trim();
-  if(!name) return alert('Enter a project name');
-  const p = { id:uid(), name, notes:'', tasks:[], created:Date.now() };
-  state.projects.unshift(p);
-  el('newProjectName').value='';
-  save(); renderProjects(); selectProject(p.id);
-});
+    const USERS = [
+      { id: "self", label: "You" },
+      { id: "partner", label: "Partner" }
+    ];
 
-function renderProjects(){
-  const wrap = el('projects'); wrap.innerHTML='';
-  state.projects.forEach(p=>{
-    const d = document.createElement('div');
-    d.className='project'+(state.selectedId===p.id?' active':'');
-    d.innerHTML = `<strong>${p.name}</strong><div class="meta">${p.tasks.length} tasks • ${new Date(p.created).toLocaleDateString()}</div>`;
-    d.onclick = ()=>selectProject(p.id);
-    wrap.appendChild(d);
-  });
-}
-
-/* ===== Select project ===== */
-function selectProject(id){
-  state.selectedId = id;
-  save();
-  renderProjects();
-  const p = state.projects.find(x=>x.id===id);
-  if(!p) return;
-  el('projectTitle').textContent = p.name;
-  el('projectMeta').textContent = `${p.tasks.length} tasks`;
-  el('notesArea').textContent = p.notes || '';
-  el('addTaskBtn').disabled = false;
-  el('generatePlanBtn').disabled = false;
-  renderTasks(p);
-  renderKanban(p);
-}
-
-/* ===== Tasks ===== */
-el('addTaskBtn').addEventListener('click', ()=>{
-  el('taskForm').classList.remove('hidden');
-  el('taskTitle').value=''; el('taskNotes').value=''; el('taskPriority').value='med'; el('taskDue').value='';
-});
-el('cancelTask').addEventListener('click', ()=>el('taskForm').classList.add('hidden'));
-
-el('saveTask').addEventListener('click', ()=>{
-  const p = state.projects.find(x=>x.id===state.selectedId);
-  if(!p) return alert('Select a project');
-  const t = {
-    id: uid(),
-    title: el('taskTitle').value.trim() || 'Untitled',
-    notes: el('taskNotes').value.trim(),
-    priority: el('taskPriority').value,
-    due: el('taskDue').value || null,
-    tags: el('taskTags').value.split(',').map(s=>s.trim()).filter(Boolean),
-    status: 'todo',
-    created: Date.now()
-  };
-  p.tasks.unshift(t);
-  save(); renderTasks(p); renderKanban(p);
-  el('taskForm').classList.add('hidden');
-});
-
-function renderTasks(p){
-  const wrap = el('tasks'); wrap.innerHTML='';
-  p.tasks.forEach(t=>{
-    const node = document.createElement('div'); node.className='task';
-    node.innerHTML = `
-      <div class="leftcol">
-        <input type="checkbox" ${t.status==='done'?'checked':''} data-id="${t.id}" />
-        <div>
-          <div><strong>${t.title}</strong> <span class="small">${t.tags.map(x=>'<span class="tag">'+x+'</span>').join(' ')}</span></div>
-          <div class="meta">${t.notes? t.notes.slice(0,80)+'...' : ''}</div>
-        </div>
-      </div>
-      <div style="text-align:right">
-        <div class="pill">${t.priority}</div>
-        <div class="meta">${t.due?formatDate(t.due):''}</div>
-        <div style="margin-top:6px"><button data-edit="${t.id}">Edit</button> <button data-del="${t.id}">Delete</button></div>
-      </div>`;
-    wrap.appendChild(node);
-  });
-}
-
-/* Task interactions (delegated) */
-el('tasks').addEventListener('click', (ev)=>{
-  const p = state.projects.find(x=>x.id===state.selectedId);
-  if(!p) return;
-  const edit = ev.target.closest('[data-edit]');
-  const del = ev.target.closest('[data-del]');
-  if(edit){
-    const id = edit.getAttribute('data-edit');
-    const t = p.tasks.find(x=>x.id===id);
-    el('taskForm').classList.remove('hidden');
-    el('taskTitle').value = t.title;
-    el('taskNotes').value = t.notes;
-    el('taskPriority').value = t.priority;
-    el('taskDue').value = t.due || '';
-    // replace save handler temporarily for edit
-    const saveBtn = el('saveTask');
-    const old = saveBtn.onclick;
-    saveBtn.onclick = ()=>{
-      t.title = el('taskTitle').value.trim() || t.title;
-      t.notes = el('taskNotes').value.trim();
-      t.priority = el('taskPriority').value;
-      t.due = el('taskDue').value || null;
-      save(); renderTasks(p); renderKanban(p);
-      el('taskForm').classList.add('hidden');
-      saveBtn.onclick = old;
+    const QUESTIONS = {
+      baseline: [
+        {
+          id: "ideal_importance_closeness",
+          type: "slider",
+          label: "Emotional closeness with partner",
+          help: "In an ideal world, how important is this to you?",
+          min: 0,
+          max: 10,
+          tags: ["partner", "stated"]
+        },
+        {
+          id: "ideal_importance_intimacy",
+          type: "slider",
+          label: "Physical intimacy and affection",
+          help: "Not pressure, just how much you value it ideally.",
+          min: 0,
+          max: 10,
+          tags: ["partner", "intimacy", "stated"]
+        },
+        {
+          id: "ideal_importance_child",
+          type: "slider",
+          label: "Parenting / time with child",
+          help: "How central is this in your ideal life?",
+          min: 0,
+          max: 10,
+          tags: ["child", "stated"]
+        },
+        {
+          id: "ideal_importance_work",
+          type: "slider",
+          label: "Work / career / contribution",
+          help: "Regardless of current job, how important is this domain?",
+          min: 0,
+          max: 10,
+          tags: ["work", "stated"]
+        },
+        {
+          id: "ideal_importance_autonomy",
+          type: "slider",
+          label: "Autonomy and alone time",
+          help: "Space to decompress, stim, or just be left alone.",
+          min: 0,
+          max: 10,
+          tags: ["autonomy", "stated"]
+        }
+      ],
+      stress: [
+        {
+          id: "energy_drain_time",
+          type: "single",
+          label: "When are you usually most drained?",
+          options: [
+            { id: "morning", label: "Morning" },
+            { id: "afternoon", label: "Afternoon" },
+            { id: "evening", label: "Evening" },
+            { id: "varies", label: "It varies a lot" }
+          ],
+          tags: ["stress"]
+        },
+        {
+          id: "after_day_need",
+          type: "single",
+          label: "After a heavy day, you usually need first:",
+          options: [
+            { id: "silence", label: "Silence / low input", tags: ["autonomy"] },
+            { id: "screens", label: "Screens / scrolling / games", tags: ["self_soothing"] },
+            { id: "talk", label: "Talking / debriefing", tags: ["partner"] },
+            { id: "movement", label: "Movement / walk / fidget", tags: ["regulation"] }
+          ],
+          tags: ["stress"]
+        },
+        {
+          id: "overwhelm_pattern",
+          type: "single",
+          label: "When you’re overwhelmed, you tend to:",
+          options: [
+            { id: "shutdown", label: "Shut down / go quiet", tags: ["shutdown"] },
+            { id: "irritable", label: "Get snappy or irritable", tags: ["defensive"] },
+            { id: "overfunction", label: "Do more to try to fix everything", tags: ["overfunction"] },
+            { id: "disappear_task", label: "Disappear into a task or hyperfocus", tags: ["avoidance"] }
+          ],
+          tags: ["stress"]
+        }
+      ],
+      scenarios: [
+        {
+          id: "one_hour_energy",
+          type: "single",
+          label: "You have 1 hour of usable energy tonight. What do you usually end up doing?",
+          help: "Answer honestly, not aspirationally.",
+          options: [
+            { id: "partner_time", label: "Time with partner", tags: ["partner", "revealed"] },
+            { id: "child_time", label: "Time with child", tags: ["child", "revealed"] },
+            { id: "work_admin", label: "Work / admin / emails", tags: ["work", "revealed"] },
+            { id: "screens", label: "Scrolling / TV / games", tags: ["self_soothing", "revealed"] },
+            { id: "chores", label: "Housework / chores", tags: ["house", "revealed"] }
+          ],
+          tags: ["revealed"]
+        },
+        {
+          id: "work_runs_over",
+          type: "single",
+          label: "A work task runs over and eats into your evening. What happens most often?",
+          options: [
+            { id: "protect_couple", label: "You protect couple time and push the task", tags: ["partner", "boundary", "revealed"] },
+            { id: "sacrifice_couple", label: "You sacrifice couple time to finish work", tags: ["work", "revealed"] },
+            { id: "sacrifice_rest", label: "You sacrifice your own rest to do both", tags: ["work", "self_cost", "revealed"] },
+            { id: "messy_mix", label: "You half-do both and end up wrecked", tags: ["overfunction", "revealed"] }
+          ],
+          tags: ["revealed"]
+        },
+        {
+          id: "child_settled_evening",
+          type: "single",
+          label: "Your child is finally settled. You’re both tired. What happens most often?",
+          options: [
+            { id: "separate_collapse", label: "You both collapse into separate things", tags: ["autonomy", "revealed"] },
+            { id: "more_housework", label: "One of you does more housework", tags: ["house", "revealed"] },
+            { id: "one_seeks_other_withdraws", label: "One seeks connection, the other withdraws", tags: ["partner", "avoidance", "revealed"] },
+            { id: "intentional_together", label: "You intentionally do something together", tags: ["partner", "revealed"] }
+          ],
+          tags: ["revealed"]
+        }
+      ],
+      avoidance: [
+        {
+          id: "demand_feels_like_run",
+          type: "slider",
+          label: "When someone expects something from me, even if I want it, I often feel like running away.",
+          help: "0 = not at all, 10 = this is very strong for me.",
+          min: 0,
+          max: 10,
+          tags: ["pda", "avoidance"]
+        },
+        {
+          id: "partner_wants_closeness_feel",
+          type: "single",
+          label: "When my partner hints they want closeness, it usually feels like:",
+          options: [
+            { id: "warm_invite", label: "A warm invitation", tags: ["safety"] },
+            { id: "bit_pressure", label: "A bit of pressure", tags: ["pda"] },
+            { id: "demand", label: "A demand I want to avoid", tags: ["pda", "avoidance"] },
+            { id: "depends_state", label: "It depends a lot on my state", tags: ["context"] }
+          ],
+          tags: ["pda"]
+        },
+        {
+          id: "rsd_distance_story",
+          type: "single",
+          label: "If my partner seems distant, I tend to assume:",
+          options: [
+            { id: "tired", label: "They’re tired or overloaded", tags: ["neutral"] },
+            { id: "angry", label: "They’re angry with me", tags: ["rsd"] },
+            { id: "my_fault", label: "I’ve done something wrong", tags: ["rsd"] },
+            { id: "dont_want_me", label: "They don’t really want me", tags: ["rsd"] }
+          ],
+          tags: ["rsd"]
+        }
+      ],
+      intimacy: [
+        {
+          id: "closeness_easier_when",
+          type: "multi",
+          label: "For me, physical or emotional closeness is easier when:",
+          options: [
+            { id: "house_ok", label: "The house is at least somewhat under control", tags: ["house", "green_flag"] },
+            { id: "not_working", label: "Work isn’t bleeding into the evening", tags: ["work", "green_flag"] },
+            { id: "alone_first", label: "I’ve had some alone time first", tags: ["autonomy", "green_flag"] },
+            { id: "wanted_not_pressured", label: "I feel wanted but not pressured", tags: ["safety", "green_flag"] }
+          ],
+          tags: ["intimacy"]
+        },
+        {
+          id: "shuts_down_desire",
+          type: "multi",
+          label: "Biggest things that shut down my desire for closeness are:",
+          options: [
+            { id: "feeling_criticised", label: "Feeling criticised or judged", tags: ["rsd", "red_flag"] },
+            { id: "feeling_task", label: "Feeling like a task or obligation", tags: ["pda", "red_flag"] },
+            { id: "sensory_overload", label: "Sensory overload / too much input", tags: ["sensory", "red_flag"] },
+            { id: "unsafe_on_edge", label: "Feeling unsafe, braced, or on edge", tags: ["trauma", "red_flag"] }
+          ],
+          tags: ["intimacy"]
+        }
+      ]
     };
-  }
-  if(del){
-    const id = del.getAttribute('data-del');
-    if(!confirm('Delete task?')) return;
-    p.tasks = p.tasks.filter(x=>x.id!==id);
-    save(); renderTasks(p); renderKanban(p);
-  }
-});
 
-/* Checkbox toggle */
-el('tasks').addEventListener('change', (ev)=>{
-  if(ev.target.type==='checkbox'){
-    const id = ev.target.getAttribute('data-id');
-    const p = state.projects.find(x=>x.id===state.selectedId);
-    const t = p.tasks.find(x=>x.id===id);
-    t.status = ev.target.checked ? 'done' : 'todo';
-    save(); renderKanban(p); renderTasks(p);
-  }
-});
+    // -----------------------------
+    // State
+    // -----------------------------
 
-/* ===== Kanban rendering & drag/drop (simple) ===== */
-function renderKanban(p){
-  const cols = { todo:[], doing:[], done:[] };
-  p.tasks.forEach(t=>cols[t.status||'todo'].push(t));
-  document.querySelectorAll('.col').forEach(c=>{
-    const key = c.getAttribute('data-col');
-    const list = c.querySelector('.col-list'); list.innerHTML='';
-    cols[key].forEach(t=>{
-      const card = document.createElement('div');
-      card.className='task';
-      card.draggable = true;
-      card.dataset.id = t.id;
-      card.innerHTML = `<div><strong>${t.title}</strong><div class="meta">${t.priority} • ${t.tags.join(', ')}</div></div>`;
-      list.appendChild(card);
-    });
-  });
+    const STORAGE_KEY = "patterns_not_promises_state_v1";
 
-  // drag/drop handlers
-  document.querySelectorAll('.col').forEach(col=>{
-    col.ondragover = e=>e.preventDefault();
-    col.ondrop = e=>{
-      const id = e.dataTransfer.getData('text/plain');
-      const status = col.getAttribute('data-col');
-      const t = p.tasks.find(x=>x.id===id);
-      if(t){ t.status = status; save(); renderTasks(p); renderKanban(p); }
+    let state = loadState() || {
+      mode: "solo", // "solo" | "couple"
+      currentSectionIndex: 0,
+      currentUserIndex: 0,
+      answers: {
+        self: {},
+        partner: {}
+      }
     };
-  });
-  document.querySelectorAll('.col-list .task, .col .task').forEach(card=>{
-    card.ondragstart = e=> e.dataTransfer.setData('text/plain', card.dataset.id);
-  });
-}
 
-/* ===== Notes autosave ===== */
-el('notesArea').addEventListener('input', ()=>{
-  const p = state.projects.find(x=>x.id===state.selectedId);
-  if(!p) return;
-  p.notes = el('notesArea').textContent;
-  save();
-});
-
-/* ===== Export / Import ===== */
-el('exportBtn').addEventListener('click', ()=>{
-  const data = JSON.stringify(state, null, 2);
-  const blob = new Blob([data], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'plate-manager-export.json';
-  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-});
-el('importBtn').addEventListener('click', ()=>{
-  const inp = document.createElement('input'); inp.type='file'; inp.accept='application/json';
-  inp.onchange = e=>{
-    const f = e.target.files[0]; if(!f) return;
-    const r = new FileReader();
-    r.onload = ()=> {
-      try{
-        const imported = JSON.parse(r.result);
-        if(imported.projects) state = imported;
-        save(); renderProjects(); if(state.projects[0]) selectProject(state.projects[0].id);
-        alert('Imported');
-      }catch(err){ alert('Invalid file'); }
-    };
-    r.readAsText(f);
-  };
-  inp.click();
-});
-
-/* ===== Quick actions ===== */
-el('prioritiseHigh').addEventListener('click', ()=>{
-  const p = state.projects.find(x=>x.id===state.selectedId); if(!p) return alert('Select a project');
-  p.tasks.forEach(t=>{ if(t.priority==='med') t.priority='high'; });
-  save(); renderTasks(p); renderKanban(p);
-});
-el('clearDone').addEventListener('click', ()=>{
-  const p = state.projects.find(x=>x.id===state.selectedId); if(!p) return;
-  p.tasks = p.tasks.filter(t=>t.status!=='done'); save(); renderTasks(p); renderKanban(p);
-});
-el('resetData').addEventListener('click', ()=>{
-  if(!confirm('Reset all local data? This cannot be undone.')) return;
-  localStorage.removeItem(STORAGE_KEY); state = {projects:[],selectedId:null}; renderProjects(); selectProject(null);
-});
-
-/* ===== Generate simple plan (action list) ===== */
-el('generatePlanBtn').addEventListener('click', ()=>{
-  const p = state.projects.find(x=>x.id===state.selectedId); if(!p) return;
-  // produce prioritized checklist
-  const urgent = p.tasks.filter(t=>t.priority==='urgent' || t.due).slice(0,10);
-  const plan = urgent.length ? urgent : p.tasks.slice(0,6);
-  const summary = ['Action plan for: '+p.name, '---', ...plan.map((t,i)=>`${i+1}. ${t.title} — ${t.priority} ${t.due?('• due '+formatDate(t.due)) : ''}\n   Notes: ${t.notes || '—'}`)].join('\n\n');
-  // show in notes area and copy to clipboard
-  p.notes = (p.notes || '') + '\n\n' + summary;
-  el('notesArea').textContent = p.notes;
-  save();
-  navigator.clipboard?.writeText(summary).catch(()=>{});
-  alert('Plan appended to notes and copied to clipboard (if allowed).');
-});
-
-/* ===== Search & filters ===== */
-el('globalSearch').addEventListener('input', (e)=>{
-  const q = e.target.value.toLowerCase();
-  if(!q){ renderProjects(); return; }
-  const wrap = el('projects'); wrap.innerHTML='';
-  state.projects.filter(p=> (p.name||'').toLowerCase().includes(q) || (p.notes||'').toLowerCase().includes(q) || p.tasks.some(t=>t.title.toLowerCase().includes(q))).forEach(p=>{
-    const d = document.createElement('div'); d.className='project';
-    d.innerHTML = `<strong>${p.name}</strong><div class="meta">${p.tasks.length} tasks</div>`;
-    d.onclick = ()=>selectProject(p.id);
-    wrap.appendChild(d);
-  });
-});
-
-/* ===== Quick filter pills ===== */
-document.querySelectorAll('.pill[data-filter]').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const f = btn.getAttribute('data-filter');
-    // create or select project with that name
-    let p = state.projects.find(x=>x.name.toLowerCase()===f);
-    if(!p){
-      p = { id:uid(), name:f.charAt(0).toUpperCase()+f.slice(1), notes:'', tasks:[], created:Date.now() };
-      state.projects.unshift(p); save(); renderProjects();
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (e) {
+        return null;
+      }
     }
-    selectProject(p.id);
-  });
-});
 
-/* ===== Init ===== */
-load();
-</script>
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    function resetState() {
+      state = {
+        mode: "solo",
+        currentSectionIndex: 0,
+        currentUserIndex: 0,
+        answers: {
+          self: {},
+          partner: {}
+        }
+      };
+      saveState();
+      render();
+    }
+
+    // -----------------------------
+    // Helpers
+    // -----------------------------
+
+    function getActiveUsers() {
+      return state.mode === "solo" ? [USERS[0]] : USERS;
+    }
+
+    function getCurrentUser() {
+      return getActiveUsers()[state.currentUserIndex];
+    }
+
+    function setAnswer(userId, questionId, value) {
+      if (!state.answers[userId]) state.answers[userId] = {};
+      state.answers[userId][questionId] = value;
+      saveState();
+      renderProgressBar();
+    }
+
+    function getAnswer(userId, questionId, fallback = null) {
+      return state.answers[userId]?.[questionId] ?? fallback;
+    }
+
+    function nextSection() {
+      if (SECTIONS[state.currentSectionIndex].id === "summary") return;
+      state.currentSectionIndex++;
+      // if we moved past mode, ensure user index reset
+      if (SECTIONS[state.currentSectionIndex].kind === "questions") {
+        state.currentUserIndex = 0;
+      }
+      saveState();
+      render();
+    }
+
+    function prevSection() {
+      if (state.currentSectionIndex === 0) return;
+      state.currentSectionIndex--;
+      if (SECTIONS[state.currentSectionIndex].kind === "questions") {
+        state.currentUserIndex = 0;
+      }
+      saveState();
+      render();
+    }
+
+    function nextUserOrSection() {
+      const users = getActiveUsers();
+      if (users.length === 1) {
+        nextSection();
+        return;
+      }
+      if (state.currentUserIndex < users.length - 1) {
+        state.currentUserIndex++;
+        saveState();
+        render();
+      } else {
+        state.currentUserIndex = 0;
+        nextSection();
+      }
+    }
+
+    function prevUserOrSection() {
+      const users = getActiveUsers();
+      if (users.length === 1) {
+        prevSection();
+        return;
+      }
+      if (state.currentUserIndex > 0) {
+        state.currentUserIndex--;
+        saveState();
+        render();
+      } else {
+        prevSection();
+        const usersAfter = getActiveUsers();
+        state.currentUserIndex = Math.max(0, usersAfter.length - 1);
+        saveState();
+        render();
+      }
+    }
+
+    // -----------------------------
+    // Scoring
+    // -----------------------------
+
+    function computeScoresForUser(userId) {
+      const answers = state.answers[userId] || {};
+      const scores = {
+        stated: { partner: 0, child: 0, work: 0, autonomy: 0 },
+        revealed: { partner: 0, child: 0, work: 0, house: 0, self_soothing: 0, autonomy: 0 },
+        blockers: { pda: 0, rsd: 0, trauma: 0, sensory: 0 },
+        greenFlags: [],
+        redFlags: []
+      };
+
+      // Stated values
+      scores.stated.partner += (answers["ideal_importance_closeness"] || 0);
+      scores.stated.partner += (answers["ideal_importance_intimacy"] || 0);
+      scores.stated.child += (answers["ideal_importance_child"] || 0);
+      scores.stated.work += (answers["ideal_importance_work"] || 0);
+      scores.stated.autonomy += (answers["ideal_importance_autonomy"] || 0);
+
+      // Revealed: from scenarios
+      const scenarioMap = {
+        one_hour_energy: {
+          partner_time: { partner: 2 },
+          child_time: { child: 2 },
+          work_admin: { work: 2 },
+          screens: { self_soothing: 2 },
+          chores: { house: 2 }
+        },
+        work_runs_over: {
+          protect_couple: { partner: 2 },
+          sacrifice_couple: { work: 2 },
+          sacrifice_rest: { work: 1, self_soothing: -1 },
+          messy_mix: { work: 1, self_soothing: 1 }
+        },
+        child_settled_evening: {
+          separate_collapse: { autonomy: 2 },
+          more_housework: { house: 2 },
+          one_seeks_other_withdraws: { partner: 1, autonomy: 1 },
+          intentional_together: { partner: 2 }
+        }
+      };
+
+      Object.entries(scenarioMap).forEach(([qid, mapping]) => {
+        const val = answers[qid];
+        if (!val) return;
+        const weights = mapping[val];
+        if (!weights) return;
+        Object.entries(weights).forEach(([k, v]) => {
+          if (scores.revealed[k] == null) scores.revealed[k] = 0;
+          scores.revealed[k] += v;
+        });
+      });
+
+      // Blockers: PDA / RSD / trauma / sensory
+      const pdaSlider = answers["demand_feels_like_run"] || 0;
+      scores.blockers.pda += pdaSlider;
+
+      const closenessFeel = answers["partner_wants_closeness_feel"];
+      if (closenessFeel === "bit_pressure") scores.blockers.pda += 2;
+      if (closenessFeel === "demand") scores.blockers.pda += 4;
+
+      const rsdStory = answers["rsd_distance_story"];
+      if (rsdStory === "angry") scores.blockers.rsd += 3;
+      if (rsdStory === "my_fault") scores.blockers.rsd += 4;
+      if (rsdStory === "dont_want_me") scores.blockers.rsd += 5;
+
+      const shutsDown = answers["shuts_down_desire"] || [];
+      if (shutsDown.includes("feeling_criticised")) scores.blockers.rsd += 2;
+      if (shutsDown.includes("feeling_task")) scores.blockers.pda += 2;
+      if (shutsDown.includes("sensory_overload")) scores.blockers.sensory += 3;
+      if (shutsDown.includes("unsafe_on_edge")) scores.blockers.trauma += 4;
+
+      // Green / red flags
+      const green = answers["closeness_easier_when"] || [];
+      const red = answers["shuts_down_desire"] || [];
+      scores.greenFlags = green;
+      scores.redFlags = red;
+
+      return scores;
+    }
+
+    function computeCoupleSummary() {
+      const users = getActiveUsers();
+      const perUser = {};
+      users.forEach(u => {
+        perUser[u.id] = computeScoresForUser(u.id);
+      });
+
+      // simple gap detection: stated vs revealed for partner
+      function gapLabel(scores) {
+        const statedPartner = scores.stated.partner;
+        const revealedPartner = scores.revealed.partner || 0;
+        if (statedPartner >= 14 && revealedPartner <= 2) {
+          return "Partner connection is highly valued in theory but often sacrificed in practice.";
+        }
+        if (statedPartner >= 10 && revealedPartner >= 3) {
+          return "Partner connection is both valued and shows up in your choices when you have capacity.";
+        }
+        if (statedPartner <= 6 && revealedPartner >= 3) {
+          return "You may be under-reporting how much your choices lean toward partner connection.";
+        }
+        return "Your stated and lived priorities around partner connection are mixed but informative.";
+      }
+
+      const notes = {};
+      users.forEach(u => {
+        notes[u.id] = gapLabel(perUser[u.id]);
+      });
+
+      // alignment / clash: partner vs work vs child
+      let alignment = [];
+      let clash = [];
+
+      if (users.length === 2) {
+        const a = perUser[users[0].id];
+        const b = perUser[users[1].id];
+
+        const aPartner = a.stated.partner + (a.revealed.partner || 0);
+        const bPartner = b.stated.partner + (b.revealed.partner || 0);
+        const aWork = a.stated.work + (a.revealed.work || 0);
+        const bWork = b.stated.work + (b.revealed.work || 0);
+        const aChild = a.stated.child + (a.revealed.child || 0);
+        const bChild = b.stated.child + (b.revealed.child || 0);
+
+        if (aPartner > 10 && bPartner > 10) {
+          alignment.push("You both care a lot about couple connection, even if it’s hard to enact.");
+        }
+        if (aChild > 10 && bChild > 10) {
+          alignment.push("You both strongly prioritise your child’s wellbeing.");
+        }
+        if (bWork > aWork + 4) {
+          clash.push("Work pulls your partner harder than it pulls you, which may leave you feeling sidelined.");
+        }
+        if (aWork > bWork + 4) {
+          clash.push("Work pulls you harder than it pulls your partner, which may leave them feeling secondary.");
+        }
+        if (aChild > aPartner + 4 || bChild > bPartner + 4) {
+          clash.push("Parenting often wins over couple time, which can quietly starve the relationship.");
+        }
+      }
+
+      return { perUser, notes, alignment, clash };
+    }
+
+    // -----------------------------
+    // Rendering
+    // -----------------------------
+
+    function render() {
+      const app = document.getElementById("app");
+      const section = SECTIONS[state.currentSectionIndex];
+
+      if (section.kind === "mode") {
+        app.innerHTML = renderModeSection();
+      } else if (section.kind === "questions") {
+        app.innerHTML = renderQuestionSection(section);
+      } else if (section.kind === "summary") {
+        app.innerHTML = renderSummarySection();
+      }
+
+      attachEventHandlers();
+      renderProgressBar();
+    }
+
+    function renderModeSection() {
+      return `
+        <div class="card">
+          <div class="section-label">Step 1</div>
+          <h2>How do you want to use this?</h2>
+          <p>This isn’t about blame. It’s about seeing what your brains and bodies actually do under load.</p>
+          <div class="mode-toggle">
+            <button class="mode-btn ${state.mode === "solo" ? "active" : ""}" data-mode="solo">
+              Solo<br /><span>Just map your own patterns</span>
+            </button>
+            <button class="mode-btn ${state.mode === "couple" ? "active" : ""}" data-mode="couple">
+              Couple<br /><span>Two linked profiles, then a shared summary</span>
+            </button>
+          </div>
+          <div class="nav-row" style="margin-top:16px;">
+            <button class="nav-btn" id="reset-btn">Reset</button>
+            <button class="nav-btn primary" id="mode-next-btn">Begin</button>
+          </div>
+          <div class="progress">
+            <span>Progress</span>
+            <span>0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:0%;"></div></div>
+        </div>
+      `;
+    }
+
+    function renderQuestionSection(section) {
+      const user = getCurrentUser();
+      const questions = QUESTIONS[section.id] || [];
+      const totalSections = SECTIONS.length - 2; // exclude mode + summary
+      const sectionIndexForProgress = Math.max(0, state.currentSectionIndex - 1);
+      const sectionProgress = (sectionIndexForProgress / totalSections) * 100;
+
+      const userLabel =
+        state.mode === "solo"
+          ? "You"
+          : user.id === "self"
+          ? "You"
+          : "Partner";
+
+      const userBadge = `
+        <span class="badge">
+          <span class="badge-dot"></span>
+          ${userLabel}
+        </span>
+      `;
+
+      const questionsHtml = questions
+        .map(q => renderQuestion(user.id, q))
+        .join("");
+
+      const users = getActiveUsers();
+      const showUserSwitcher = users.length === 2;
+
+      return `
+        <div class="card">
+          <div class="section-label">${section.title}</div>
+          <h2>${section.title}</h2>
+          <p>${sectionDescription(section.id)}</p>
+          <div style="margin-bottom:8px;">${userBadge}</div>
+          ${questionsHtml}
+          <div class="nav-row">
+            <button class="nav-btn" id="prev-btn">${showUserSwitcher && state.currentUserIndex > 0 ? "← Back to you" : "← Back"}</button>
+            <button class="nav-btn primary" id="next-btn">${showUserSwitcher && state.currentUserIndex === 0 ? "Next: partner →" : "Next →"}</button>
+          </div>
+          <div class="progress">
+            <span>Progress</span>
+            <span>${Math.round(sectionProgress)}%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${sectionProgress}%;"></div></div>
+        </div>
+      `;
+    }
+
+    function sectionDescription(id) {
+      switch (id) {
+        case "baseline":
+          return "First, capture what you believe you prioritise in an ideal world. This is the story you tell yourself.";
+        case "stress":
+          return "Now, map how stress and energy actually move through your system. This shapes what’s even possible.";
+        case "scenarios":
+          return "These small, concrete choices show what tends to win when time, energy, and attention are limited.";
+        case "avoidance":
+          return "Here we gently map demand-avoidance and rejection sensitivity. No judgement—just patterns.";
+        case "intimacy":
+          return "Finally, we look at what makes closeness easier or harder, without pressure or expectation.";
+        default:
+          return "";
+      }
+    }
+
+    function renderQuestion(userId, q) {
+      const answer = getAnswer(userId, q.id);
+      if (q.type === "slider") {
+        const val = answer ?? Math.round((q.max - q.min) / 2);
+        return `
+          <div class="question">
+            <div class="question-label">${q.label}</div>
+            ${q.help ? `<div class="question-help">${q.help}</div>` : ""}
+            <div class="slider-row">
+              <input type="range" min="${q.min}" max="${q.max}" value="${val}" data-qid="${q.id}" class="slider-input" />
+              <div class="slider-value">${val}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (q.type === "single") {
+        return `
+          <div class="question">
+            <div class="question-label">${q.label}</div>
+            ${q.help ? `<div class="question-help">${q.help}</div>` : ""}
+            <div class="options">
+              ${q.options
+                .map(opt => {
+                  const selected = answer === opt.id ? "selected" : "";
+                  return `
+                    <button class="option-btn ${selected}" data-qid="${q.id}" data-optid="${opt.id}">
+                      ${opt.label}
+                    </button>
+                  `;
+                })
+                .join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      if (q.type === "multi") {
+        const selected = Array.isArray(answer) ? answer : [];
+        return `
+          <div class="question">
+            <div class="question-label">${q.label}</div>
+            ${q.help ? `<div class="question-help">${q.help}</div>` : ""}
+            <div class="chips">
+              ${q.options
+                .map(opt => {
+                  const isSel = selected.includes(opt.id) ? "selected" : "";
+                  return `
+                    <button class="chip ${isSel}" data-qid="${q.id}" data-optid="${opt.id}">
+                      ${opt.label}
+                    </button>
+                  `;
+                })
+                .join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      return "";
+    }
+
+    function renderSummarySection() {
+      const users = getActiveUsers();
+      const { perUser, notes, alignment, clash } = computeCoupleSummary();
+
+      const userSummaries = users
+        .map(u => {
+          const scores = perUser[u.id];
+          const label = u.id === "self" ? "You" : "Partner";
+
+          const statedTags = Object.entries(scores.stated)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 4)
+            .map(([k, v]) => {
+              if (v <= 0) return null;
+              return `<span class="summary-tag strong">${k} · ${v.toFixed(1)}</span>`;
+            })
+            .filter(Boolean)
+            .join("");
+
+          const revealedTags = Object.entries(scores.revealed)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 4)
+            .map(([k, v]) => {
+              if (v === 0) return null;
+              return `<span class="summary-tag">${k} · ${v.toFixed(1)}</span>`;
+            })
+            .filter(Boolean)
+            .join("");
+
+          const blockersTags = Object.entries(scores.blockers)
+            .sort((a, b) => b[1] - a[1])
+            .filter(([, v]) => v > 0)
+            .map(([k, v]) => `<span class="summary-tag gap">${k} · ${v.toFixed(1)}</span>`)
+            .join("");
+
+          const greenLabels = scores.greenFlags
+            .map(id => {
+              const q = QUESTIONS.intimacy.find(x => x.id === "closeness_easier_when");
+              const opt = q?.options.find(o => o.id === id);
+              return opt ? opt.label : null;
+            })
+            .filter(Boolean);
+
+          const redLabels = scores.redFlags
+            .map(id => {
+              const q = QUESTIONS.intimacy.find(x => x.id === "shuts_down_desire");
+              const opt = q?.options.find(o => o.id === id);
+              return opt ? opt.label : null;
+            })
+            .filter(Boolean);
+
+          return `
+            <div class="summary-card">
+              <h3>${label}</h3>
+              <div class="question-help">${notes[u.id]}</div>
+              <div style="margin-top:6px;font-size:0.8rem;">Stated priorities (ideal story):</div>
+              <div class="summary-tag-row">${statedTags || '<span class="summary-tag">No data yet</span>'}</div>
+              <div style="margin-top:6px;font-size:0.8rem;">Revealed priorities (under load):</div>
+              <div class="summary-tag-row">${revealedTags || '<span class="summary-tag">No data yet</span>'}</div>
+              <div style="margin-top:6px;font-size:0.8rem;">Blockers that hijack connection:</div>
+              <div class="summary-tag-row">${blockersTags || '<span class="summary-tag">None strongly flagged</span>'}</div>
+              <div style="margin-top:6px;font-size:0.8rem;">Closeness is easier when:</div>
+              <div class="summary-tag-row">
+                ${
+                  greenLabels.length
+                    ? greenLabels.map(l => `<span class="summary-tag align">${l}</span>`).join("")
+                    : '<span class="summary-tag">Not mapped yet</span>'
+                }
+              </div>
+              <div style="margin-top:6px;font-size:0.8rem;">Closeness shuts down when:</div>
+              <div class="summary-tag-row">
+                ${
+                  redLabels.length
+                    ? redLabels.map(l => `<span class="summary-tag gap">${l}</span>`).join("")
+                    : '<span class="summary-tag">Not mapped yet</span>'
+                }
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      const alignmentHtml =
+        alignment.length > 0
+          ? alignment.map(a => `<li>${a}</li>`).join("")
+          : "<li>You likely share more values than it currently feels like—this tool just scratched the surface.</li>";
+
+      const clashHtml =
+        clash.length > 0
+          ? clash.map(c => `<li>${c}</li>`).join("")
+          : "<li>No major clashes flagged from this small set of questions.</li>";
+
+      const tinyLevers = `
+        <div class="tiny-levers">
+          <strong>Tiny levers (no homework, just options):</strong>
+          <ul>
+            <li>Protect one low-pressure 20–30 minute window a week where the only rule is “no fixing, no phones, no big talks”. Just co-exist kindly.</li>
+            <li>When you notice a blocker (PDA, RSD, shutdown) kicking in, name the state (“my brain is in run-away mode”) rather than the story (“you don’t want me”).</li>
+            <li>Experiment with one “green flag” condition at a time (e.g., alone time first, or clearer invites) instead of trying to fix everything at once.</li>
+          </ul>
+        </div>
+      `;
+
+      return `
+        <div class="card">
+          <div class="section-label">Summary</div>
+          <h2>What your patterns are quietly saying</h2>
+          <p>This isn’t a verdict. It’s a snapshot of how stress, neurodivergence, and life load shape your choices.</p>
+          <div class="summary-grid">
+            ${userSummaries}
+          </div>
+          <div class="summary-card" style="margin-top:10px;">
+            <h3>Where you align</h3>
+            <ul style="margin:4px 0 0;padding-left:18px;font-size:0.82rem;">
+              ${alignmentHtml}
+            </ul>
+          </div>
+          <div class="summary-card" style="margin-top:8px;">
+            <h3>Where it quietly clashes</h3>
+            <ul style="margin:4px 0 0;padding-left:18px;font-size:0.82rem;">
+              ${clashHtml}
+            </ul>
+          </div>
+          ${tinyLevers}
+          <div class="nav-row" style="margin-top:14px;">
+            <button class="nav-btn" id="summary-back-btn">← Back</button>
+            <button class="nav-btn primary" id="reset-btn">Start over</button>
+          </div>
+          <div class="progress">
+            <span>Progress</span>
+            <span>100%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:100%;"></div></div>
+        </div>
+      `;
+    }
+
+    function renderProgressBar() {
+      const section = SECTIONS[state.currentSectionIndex];
+      const bar = document.querySelector(".progress-fill");
+      const label = document.querySelector(".progress span:last-child");
+      if (!bar || !label) return;
+
+      if (section.kind === "mode") {
+        bar.style.width = "0%";
+        label.textContent = "0%";
+        return;
+      }
+      if (section.kind === "summary") {
+        bar.style.width = "100%";
+        label.textContent = "100%";
+        return;
+      }
+
+      const totalSections = SECTIONS.length - 2; // exclude mode + summary
+      const sectionIndexForProgress = Math.max(0, state.currentSectionIndex - 1);
+      const pct = (sectionIndexForProgress / totalSections) * 100;
+      bar.style.width = pct + "%";
+      label.textContent = Math.round(pct) + "%";
+    }
+
+    // -----------------------------
+    // Events
+    // -----------------------------
+
+    function attachEventHandlers() {
+      const modeButtons = document.querySelectorAll(".mode-btn");
+      modeButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const mode = btn.getAttribute("data-mode");
+          if (!mode) return;
+          state.mode = mode;
+          saveState();
+          render();
+        });
+      });
+
+      const modeNext = document.getElementById("mode-next-btn");
+      if (modeNext) {
+        modeNext.addEventListener("click", () => {
+          state.currentSectionIndex = 1;
+          state.currentUserIndex = 0;
+          saveState();
+          render();
+        });
+      }
+
+      const resetBtn = document.getElementById("reset-btn");
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+          if (confirm("Reset all answers and start again?")) {
+            resetState();
+          }
+        });
+      }
+
+      const prevBtn = document.getElementById("prev-btn");
+      if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+          prevUserOrSection();
+        });
+      }
+
+      const nextBtn = document.getElementById("next-btn");
+      if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+          const isLastQuestionSection =
+            SECTIONS[state.currentSectionIndex + 1]?.kind === "summary";
+          if (isLastQuestionSection && state.mode === "solo") {
+            state.currentSectionIndex++;
+            saveState();
+            render();
+          } else if (isLastQuestionSection && state.mode === "couple" && state.currentUserIndex === 1) {
+            state.currentSectionIndex++;
+            state.currentUserIndex = 0;
+            saveState();
+            render();
+          } else {
+            nextUserOrSection();
+          }
+        });
+      }
+
+      const summaryBack = document.getElementById("summary-back-btn");
+      if (summaryBack) {
+        summaryBack.addEventListener("click", () => {
+          state.currentSectionIndex = SECTIONS.findIndex(s => s.id === "intimacy");
+          state.currentUserIndex = 0;
+          saveState();
+          render();
+        });
+      }
+
+      // sliders
+      document.querySelectorAll(".slider-input").forEach(slider => {
+        slider.addEventListener("input", e => {
+          const qid = slider.getAttribute("data-qid");
+          const val = Number(slider.value);
+          const user = getCurrentUser();
+          setAnswer(user.id, qid, val);
+          const valueLabel = slider.parentElement.querySelector(".slider-value");
+          if (valueLabel) valueLabel.textContent = val;
+        });
+      });
+
+      // single-choice
+      document.querySelectorAll(".option-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const qid = btn.getAttribute("data-qid");
+          const optid = btn.getAttribute("data-optid");
+          const user = getCurrentUser();
+          setAnswer(user.id, qid, optid);
+          document
+            .querySelectorAll(`.option-btn[data-qid="${qid}"]`)
+            .forEach(b => b.classList.remove("selected"));
+          btn.classList.add("selected");
+        });
+      });
+
+      // multi-choice
+      document.querySelectorAll(".chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+          const qid = chip.getAttribute("data-qid");
+          const optid = chip.getAttribute("data-optid");
+          const user = getCurrentUser();
+          const current = getAnswer(user.id, qid, []);
+          let next;
+          if (current.includes(optid)) {
+            next = current.filter(x => x !== optid);
+          } else {
+            next = [...current, optid];
+          }
+          setAnswer(user.id, qid, next);
+          chip.classList.toggle("selected");
+        });
+      });
+    }
+
+    // -----------------------------
+    // Init
+    // -----------------------------
+
+    render();
+  </script>
 </body>
 </html>
